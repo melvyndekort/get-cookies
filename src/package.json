@@ -1,7 +1,7 @@
 {
   "name": "convert-jwt",
   "version": "1.0.0",
-  "description": "convert-jwt converts an Auth0 JWT token to an AWS Cloudfront signed cookie",
+  "description": "A serverless authentication solution which converts Auth0 JWT tokens to AWS Cloudfront signed cookies",
   "main": "app.js",
   "repository": "https://github.com/melvyndekort/convert-jwt",
   "author": "Melvyn de Kort",
