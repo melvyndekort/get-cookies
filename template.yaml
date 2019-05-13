@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Convert an Auth0 JWT token to an AWS Cloudfront signed cookie
+
+Resources:
+  AuthApi:
+    Type: AWS::Serverless::Api
+    Properties:
+        Name: auth-api
+        StageName: prod
+        EndpointConfiguration: EDGE
+        Cors:
+          AllowOrigin: "'*'"
+  ConvertJWTFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: convert-jwt
+      Description: Convert an Auth0 JWT token to an AWS Cloudfront signed cookie
+      CodeUri: src/
+      Handler: app.lambdaHandler
+      Runtime: nodejs8.10
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: ssm:DescribeParameters
+              Resource: '*'
+            - Effect: Allow
+              Action: ssm:GetParameters
+              Resource: 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cloudfront-private-key'
+      Environment:
+        Variables:
+          PRIVATE_KEY_PARAM_NAME: 'cloudfront-private-key'
+          AUTH0_PUB_KEY: |-
+            -----BEGIN PUBLIC KEY-----
+            REPLACE ME
+            -----END PUBLIC KEY-----
+      Events:
+        ConvertJwtApi:
+          Type: Api
+          Properties:
+            Path: /convert-jwt
+            Method: get

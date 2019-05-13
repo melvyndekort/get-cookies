@@ -1,0 +1,11 @@
+{
+  "path": "/convert-jwt",
+  "httpMethod": "GET",
+  "isBase64Encoded": false,
+  "queryStringParameters": {
+    "id_token": "REPLACE ME"
+  },
+  "headers": {
+    "Origin": "https://example.melvyn.dev"
+  }
+}
