@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Convert an Auth0 JWT token to an AWS Cloudfront signed cookie
+Description: A serverless authentication solution which converts Auth0 JWT tokens to AWS Cloudfront signed cookies
 
 Resources:
   AuthApi:
