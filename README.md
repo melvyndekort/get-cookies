@@ -1,10 +1,10 @@
 # Convert JWT
 
-A serverless authentication solution which converts Auth0 JWT tokens to AWS Cloudfront signed cookies
+convert-jwt is a serverless authentication solution which converts Auth0 JWT tokens to AWS Cloudfront signed cookies
 
 ## Installation
 
-Use the AWS Serverless Application Model [sam](https://aws.amazon.com/serverless/sam/) to build, test and deploy Convert JWT.
+Use the AWS Serverless Application Model [sam](https://aws.amazon.com/serverless/sam/) to build, test and deploy convert-jwt.
 
 ```bash
 make gateway # run a local execution environment
