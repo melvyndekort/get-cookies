@@ -3,14 +3,6 @@ Transform: AWS::Serverless-2016-10-31
 Description: A serverless authentication solution which converts Auth0 JWT tokens to AWS Cloudfront signed cookies
 
 Resources:
-  AuthApi:
-    Type: AWS::Serverless::Api
-    Properties:
-        Name: auth-api
-        StageName: prod
-        EndpointConfiguration: EDGE
-        Cors:
-          AllowOrigin: "'*'"
   ConvertJWTFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -26,15 +18,30 @@ Resources:
               Action: ssm:DescribeParameters
               Resource: '*'
             - Effect: Allow
-              Action: ssm:GetParameters
-              Resource: 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/cloudfront-private-key'
+              Action: ssm:GetParameter
+              Resource: 'arn:aws:ssm:::parameter/cloudfront-private-key'
       Environment:
         Variables:
           PRIVATE_KEY_PARAM_NAME: 'cloudfront-private-key'
           AUTH0_PUB_KEY: |-
-            -----BEGIN PUBLIC KEY-----
-            REPLACE ME
-            -----END PUBLIC KEY-----
+            -----BEGIN CERTIFICATE-----
+            MIIC9DCCAdygAwIBAgIJHCSvWw042701MA0GCSqGSIb3DQEBBQUAMCExHzAdBgNV
+            BAMTFnRpbWVyZXZlbC5ldS5hdXRoMC5jb20wHhcNMTcwMTAzMDEwNTQ2WhcNMzAw
+            OTEyMDEwNTQ2WjAhMR8wHQYDVQQDExZ0aW1lcmV2ZWwuZXUuYXV0aDAuY29tMIIB
+            IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApWbMu86pl3j/b7Vjxefyt75R
+            3vKvUielizgxtRE61eYaCachii2jiOc8rD6J1n7tiQrvwVwJmdR7lhKQ+jKnshkB
+            7CsN6QTwLu3LWR6ft+0fV4lwAzVmAOuleONkdDIWpaueELZV0bBKsg89tefTJd+y
+            VgmXr2ukYcRNR3SlLMJCjoV/dmsz1zgUVVDZHCtIGbPSnyYwHUMa7FhOp7uVhMWg
+            tyzO5Az8BwnqRWYVrlnPI4t6FjpT3CvCY9i7OmZhIdh0v3hatW8vKgHmvwvD3tVN
+            QF+8bYo4Y5V1RbxXy1VcItQpZV7LiWQ0ZeegCJf2zAGQs+GVdNL/008i2QB0wQID
+            AQABoy8wLTAMBgNVHRMEBTADAQH/MB0GA1UdDgQWBBR3xV0+SAmHeqIjynzs6ZOQ
+            4VUHijANBgkqhkiG9w0BAQUFAAOCAQEAcruPxp7/Qm0+D6B2PYxbHognMFxli/qU
+            Lldsd3xLeych5qQ3Mqr3j0dAlsEwDo8EqpSwivZVuzOVBkUT5dEwQUbh+YzhSKdg
+            9i9TgTgx46T/Kk5KDYpkq/St/QXYWGCOUrcnK2MSF+6LIkSbGRgIAKQuIXgfMWu5
+            Bq/srJN9Ep8vwgDLVPwIU9QcILW5JQK3aUJSWz0ObizzRCVw7fauYEVpgJAosgJc
+            2u+C/i5E3EpHAlrvCRUBKOyF7E1afPPgkyoVAH9iOOnSVLsvH8fgdya33oDkTQJZ
+            qBiMSUb0+xg4G7fzl6+y0wPvRAJEAlJUOvs0Ao9ceviLf5Sis9aMcg==
+            -----END CERTIFICATE-----
       Events:
         ConvertJwtApi:
           Type: Api
