@@ -3,58 +3,65 @@ const cf = require('aws-cloudfront-sign')
 const fs = require('fs')
 const ssm = new (require('aws-sdk/clients/ssm'))()
 
-const errorUnexpected = new Error('Unexpected error')
-const errorUnauthorized = new Error('Unauthorized')
+const UnexpectedError = require('./UnexpectedError.js')
+const UnauthorizedError = require('./UnauthorizedError.js')
 
 exports.lambdaHandler = async (event) => {
     try {
         cookieDomain = getCookieDomain(event);
         expiration = getExpirationFromToken(event);
         cookies = await buildCookie(cookieDomain, expiration * 1000);
+
+        body = {
+            'Expiration': expiration,
+            'Policy': cookies['CloudFront-Policy'],
+            'Signature': cookies['CloudFront-Signature'],
+            'Key': process.env.KEY_PAIR_ID
+        }
+
         return {
-            "statusCode": 200,
-            "headers": {
-                "Access-Control-Allow-Origin": cookieDomain,
-                "Access-Control-Allow-Methods": "GET, OPTIONS"
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': cookieDomain,
+                'Access-Control-Allow-Methods': 'GET, OPTIONS'
             },
-            "body": JSON.stringify(cookies)
+            'body': JSON.stringify(body)
         }
     }
     catch (err) {
         console.log(err);
         return {
-            "statusCode": 401,
-            "headers": {
-                "Access-Control-Allow-Origin": cookieDomain,
-                "Access-Control-Allow-Methods": "GET, OPTIONS"
+            'statusCode': err.status,
+            'headers': {
+                'Access-Control-Allow-Origin': cookieDomain,
+                'Access-Control-Allow-Methods': 'GET, OPTIONS'
             },
-            "body": err.message
+            'body': err.message
         }
     }
 }
 
-function keysToLowercase(obj) {
+function keysToLowerCase(obj) {
     Object.fromEntries = arr => Object.assign({}, ...Array.from(arr, ([k, v]) => ({ [k]: v })));
 
     entries = Object.entries(obj).map(([k, v]) => [k.toLowerCase(), v]);
-    result = Object.fromEntries(entries);
-    return result;
+    return Object.fromEntries(entries);
 }
 
 function getCookieDomain(event) {
-    headers = keysToLowercase(event.headers);
+    headers = keysToLowerCase(event.headers);
     if (!('origin' in headers)) {
         console.log('origin header missing');
-        throw errorUnexpected;
+        throw new UnexpectedError();
     }
     return headers['origin'];
 }
 
 function getExpirationFromToken(event) {
-    parameters = keysToLowercase(event.queryStringParameters);
+    parameters = keysToLowerCase(event.queryStringParameters);
     if (!('id_token' in parameters)) {
-        console.log('id_token paramter missing');
-        throw errorUnauthorized;
+        console.log('id_token parameter missing');
+        throw new UnauthorizedError();
     }
     token = parameters['id_token'];
 
@@ -63,12 +70,12 @@ function getExpirationFromToken(event) {
     }
     catch (err) {
         console.log(err);
-        throw errorUnauthorized;
+        throw new UnauthorizedError();
     }
 
     if (!decoded.exp) {
         console.log('expiration not available in token');
-        throw errorUnauthorized;
+        throw new UnauthorizedError();
     }
 
     return decoded.exp
@@ -90,6 +97,6 @@ async function buildCookie(cookieDomain, expiration) {
     }
     catch (err) {
         console.log(err)
-        throw errorUnexpected
+        throw new UnexpectedError()
     }
 }
