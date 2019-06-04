@@ -19,9 +19,10 @@ Resources:
               Resource: '*'
             - Effect: Allow
               Action: ssm:GetParameter
-              Resource: 'arn:aws:ssm:::parameter/cloudfront-private-key'
+              Resource: 'arn:aws:ssm:*:*:parameter/cloudfront-private-key'
       Environment:
         Variables:
+          KEY_PAIR_ID: 'APKAII5737THEDVGPERA'
           PRIVATE_KEY_PARAM_NAME: 'cloudfront-private-key'
           AUTH0_PUB_KEY: |-
             -----BEGIN CERTIFICATE-----
