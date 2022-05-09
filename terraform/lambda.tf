@@ -13,7 +13,7 @@ resource "aws_lambda_function" "convert_jwt" {
 
   runtime       = "python3.9"
   architectures = ["arm64"]
-  memory_size   = 64
+  memory_size   = 128
 
   kms_key_arn = data.terraform_remote_state.aws_mdekort.outputs.generic_kms_key_arn
 
