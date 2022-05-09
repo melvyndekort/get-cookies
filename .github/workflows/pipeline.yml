@@ -20,7 +20,7 @@ jobs:
           architecture: 'x64'
           cache: 'pip'
 
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt -d .
         working-directory: src
 
       - run: tree
