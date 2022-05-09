@@ -55,7 +55,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: lambda-archive
-          path: terraform/lambda.zip
+          path: lambda.zip
 
       - name: Terraform Format
         id: fmt
