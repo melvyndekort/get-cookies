@@ -15,6 +15,7 @@ jobs:
           node-version: 14
 
       - run: npm ci
+        working-directory: src
 
       - name: Build artifact
         run: tree
