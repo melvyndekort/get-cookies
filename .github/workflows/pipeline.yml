@@ -58,9 +58,6 @@ jobs:
           name: lambda-archive
           path: terraform/
 
-      - name: listing
-        run: tree
-
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
