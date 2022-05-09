@@ -22,7 +22,7 @@ data "aws_iam_policy_document" "lambda_policy" {
       "logs:PutLogEvents",
     ]
 
-    resource = [
+    resources = [
       aws_cloudwatch_log_group.convert_jwt.arn
     ]
   }
