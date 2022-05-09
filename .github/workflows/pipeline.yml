@@ -2,6 +2,10 @@ name: "Pipeline"
 
 on:
   push:
+    paths-ignore:
+      - 'README.md'
+    branches:
+      - main
   pull_request:
 
 jobs:
