@@ -21,14 +21,15 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        working-directory: src
-        run: pip install -r requirements.txt -t ./package
+        run: pip install -r src/requirements.txt -t ./package
 
-      - run: tree
-
-      - name: Build artifact
+      - name: Package dependencies
+        working-directory: package
+        run: zip -r ../lambda.zip .
+      
+      - name: Package code
         working-directory: src
-        run: zip -r ../lambda.zip * -x requirements.txt
+        run: zip -g ../lambda.zip * -x requirements.txt
 
       - name: Archive artifacts
         if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
