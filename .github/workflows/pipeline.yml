@@ -18,7 +18,8 @@ jobs:
         working-directory: src
 
       - name: Build artifact
-        run: tree
+        working-directory: src
+        run: zip ../lambda.zip *.js node_modules
 
       - name: Archive artifacts
         if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
