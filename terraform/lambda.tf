@@ -1,8 +1,8 @@
-resource "aws_lambda_function" "test_lambda" {
+resource "aws_lambda_function" "convert-jwt" {
   filename      = "lambda.zip"
-  function_name = "lambda_function_name"
+  function_name = "convert-jwt"
   role          = aws_iam_role.iam_for_lambda.arn
-  handler       = "index.test"
+  handler       = "app.lambdaHandler"
 
   source_code_hash = filebase64sha256("lambda.zip")
 
