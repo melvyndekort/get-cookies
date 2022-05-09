@@ -3,6 +3,10 @@ name: "Pipeline"
 on:
   push:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lambda-archive
-          path: target/lambda.zip
+          path: lambda.zip
 
   deploy:
     runs-on: ubuntu-latest
