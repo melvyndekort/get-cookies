@@ -1,13 +1,12 @@
-FROM amazonlinux:2
+FROM python:3.9-slim
 
-RUN amazon-linux-extras install -y python3.8
-RUN yum install -y zip
+RUN apt-get update && apt-get install -y zip
 
 RUN mkdir /var/lambda
 WORKDIR /var/lambda
 
 COPY . .
 
-RUN pip3.8 install -r requirements.txt -t .
+RUN pip3 install -r requirements.txt -t .
 
 RUN zip -qr /tmp/lambda.zip . -x requirements.txt -x Dockerfile
