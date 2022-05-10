@@ -18,13 +18,13 @@ resource "aws_iam_role" "iam_for_lambda" {
 data "aws_iam_policy_document" "lambda_policy" {
   statement {
     actions = [
-      "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
     ]
 
     resources = [
-      aws_cloudwatch_log_group.convert_jwt.arn
+      aws_cloudwatch_log_group.convert_jwt.arn,
+      "${aws_cloudwatch_log_group.convert_jwt.arn}:*",
     ]
   }
 
