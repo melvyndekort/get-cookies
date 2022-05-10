@@ -12,25 +12,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
 
-      - uses: actions/setup-python@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
         with:
-          python-version: '3.9'
-          architecture: 'x64'
-          cache: 'pip'
+          context: src
+          platforms: linux/arm64
+          push: false
+          tags: lambda:latest
 
-      - name: Install dependencies
-        run: pip install -r src/requirements.txt -t ./package
-
-      - name: Package dependencies
-        working-directory: package
-        run: zip -r ../lambda.zip .
-      
-      - name: Package code
-        working-directory: src
-        run: zip -g ../lambda.zip * -x requirements.txt
+      - name: Get archive from image
+        run: |
+          CONTAINER_ID=$(docker create lambda)
+          docker cp ${CONTAINER_ID}:/tmp/lambda.zip lambda.zip
+          docker rm ${CONTAINER_ID}
 
       - name: Archive artifacts
         if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
