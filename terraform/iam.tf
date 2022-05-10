@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "lambda_policy" {
     ]
 
     resources = [
-      data.terraform_remote_state.aws_mdekort.outputs.generic_kms_key_arn
+      data.aws_kms_key.generic.arn
     ]
   }
 
