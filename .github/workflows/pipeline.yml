@@ -18,7 +18,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Build and push
+      - name: Build artifact in docker image
         uses: docker/build-push-action@v3
         with:
           context: "{{defaultContext}}:src"
@@ -27,13 +27,13 @@ jobs:
           load: true
           tags: myimage:latest
 
-      - name: Get archive from image
+      - name: Copy artifact from docker image
         run: |
           CONTAINER_ID=$(docker create myimage:latest)
           docker cp ${CONTAINER_ID}:/tmp/lambda.zip lambda.zip
           docker rm ${CONTAINER_ID}
 
-      - name: Archive artifacts
+      - name: Archive artifact
         if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
