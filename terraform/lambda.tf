@@ -15,7 +15,7 @@ resource "aws_lambda_function" "convert_jwt" {
   architectures = ["arm64"]
   memory_size   = 128
 
-  kms_key_arn = data.terraform_remote_state.aws_mdekort.outputs.generic_kms_key_arn
+  kms_key_arn = data.aws_kms_key.generic.arn
 
   environment {
     variables = {
