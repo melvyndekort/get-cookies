@@ -31,3 +31,11 @@ resource "aws_lambda_function" "convert_jwt" {
     aws_cloudwatch_log_group.convert_jwt,
   ]
 }
+
+resource "aws_lambda_permission" "convert_jwt" {
+  statement_id  = "AllowAuthAPIInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.convert_jwt.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.auth.execution_arn}/*/*/*"
+}
