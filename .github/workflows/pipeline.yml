@@ -24,11 +24,12 @@ jobs:
           context: "{{defaultContext}}:src"
           platforms: linux/arm64
           push: false
-          tags: lambda:latest
+          load: true
+          tags: myimage:latest
 
       - name: Get archive from image
         run: |
-          CONTAINER_ID=$(docker create lambda)
+          CONTAINER_ID=$(docker create myimage:latest)
           docker cp ${CONTAINER_ID}:/tmp/lambda.zip lambda.zip
           docker rm ${CONTAINER_ID}
 
