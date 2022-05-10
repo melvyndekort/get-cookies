@@ -10,4 +10,4 @@ COPY . .
 
 RUN pip3.8 install -r requirements.txt -t .
 
-RUN zip -r /tmp/lambda.zip . -x requirements.txt -x Dockerfile
+RUN zip -qr /tmp/lambda.zip . -x requirements.txt -x Dockerfile
