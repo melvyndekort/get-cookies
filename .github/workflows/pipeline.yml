@@ -21,7 +21,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: src
+          context: "{{defaultContext}}:src"
           platforms: linux/arm64
           push: false
           tags: lambda:latest
