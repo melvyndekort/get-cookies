@@ -11,7 +11,7 @@ resource "aws_lambda_function" "convert_jwt" {
   filename         = "lambda.zip"
   source_code_hash = filebase64sha256("lambda.zip")
 
-  runtime     = "python3.9"
+  runtime     = "python3.8"
   memory_size = 128
 
   kms_key_arn = data.terraform_remote_state.aws_mdekort.outputs.generic_kms_key_arn
