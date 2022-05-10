@@ -13,6 +13,11 @@ name: "CodeQL"
 
 on:
   push:
+    paths-ignore:
+      - 'README.md'
+      - 'Makefile'
+      - 'example-event.json'
+      - 'LICENSE.md'
     branches: [ main ]
   schedule:
     - cron: '21 22 * * 1'

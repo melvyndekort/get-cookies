@@ -1,29 +1,18 @@
 # Convert JWT
 
-convert-jwt is a serverless authentication solution which converts Auth0 JWT tokens to AWS Cloudfront signed cookies
+convert-jwt is a serverless authentication solution which converts a JWT token to AWS Cloudfront signed cookies
 
 ## Installation
 
-Use the AWS Serverless Application Model [sam](https://aws.amazon.com/serverless/sam/) to build, test and deploy convert-jwt.
-
-```bash
-make gateway # run a local execution environment
-```
-
-## Makefile targets
+It is possible to build and deploy stuff locally, but it's also fully automated through Github Actions.
+If you still have a desire to do stuff locally use the following Makefile targets:
 
 ```Makefile
-build:
-	sam build
-
-invoke: build
-	sam local invoke ConvertJWT --event event.json
-
-gateway: build
-	sam local start-api
-
-package: build
-	sam package
+clean:   clean all temporary files
+build:   build the lambda zip
+decrypt: decrypt the KMS encrypted secrets
+encrypt: encrypt the secrets with KMS
+deploy:  run the build target and then run terraform apply
 ```
 
 ## Contributing
