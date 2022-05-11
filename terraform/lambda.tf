@@ -14,6 +14,7 @@ resource "aws_lambda_function" "convert_jwt" {
   runtime       = "python3.9"
   architectures = ["arm64"]
   memory_size   = 128
+  timeout       = 8
 
   kms_key_arn = data.aws_kms_key.generic.arn
 
