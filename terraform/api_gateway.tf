@@ -12,7 +12,7 @@ resource "aws_apigatewayv2_integration" "auth" {
 
 resource "aws_apigatewayv2_route" "auth" {
   api_id    = aws_apigatewayv2_api.auth.id
-  route_key = "POST /auth"
+  route_key = "GET /auth"
   target    = "integrations/${aws_apigatewayv2_integration.auth.id}"
 }
 

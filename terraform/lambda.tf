@@ -19,9 +19,9 @@ resource "aws_lambda_function" "convert_jwt" {
 
   environment {
     variables = {
-      CLIENT_ID          = ""
+      CLIENT_ID          = "3ka58ejnvmq7q79tkttduq36aj"
       KEY_ID             = "APKARDHTW7OL4SWTL7AQ"
-      JWKS_URI           = ""
+      JWKS_URI           = "https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_0yX8E3r8e/.well-known/jwks.json"
       CLOUDFRONT_PK_PATH = aws_ssm_parameter.cloudfront_signer_key.name
     }
   }
