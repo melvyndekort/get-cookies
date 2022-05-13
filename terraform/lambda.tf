@@ -6,12 +6,12 @@ resource "aws_cloudwatch_log_group" "convert_jwt" {
 resource "aws_lambda_function" "convert_jwt" {
   function_name = "convert-jwt"
   role          = aws_iam_role.iam_for_lambda.arn
-  handler       = "lambda_function.lambda_handler"
+  handler       = "index.handler"
 
   filename         = "lambda.zip"
   source_code_hash = filebase64sha256("lambda.zip")
 
-  runtime       = "python3.9"
+  runtime       = "nodejs16.x"
   architectures = ["arm64"]
   memory_size   = 128
   timeout       = 8

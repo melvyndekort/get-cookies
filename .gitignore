@@ -2,3 +2,4 @@ secrets.yaml
 lambda.zip
 .terraform/
 .terraform.lock.hcl
+node_modules/

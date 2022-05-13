@@ -24,7 +24,6 @@ jobs:
       - name: Build artifact in docker image
         uses: docker/build-push-action@v3
         with:
-          context: "{{defaultContext}}:src"
           platforms: linux/arm64
           push: false
           load: true

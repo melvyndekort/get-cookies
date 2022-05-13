@@ -1,5 +1,5 @@
-.PHONY := clean decrypt encrypt build deploy
-.DEFAULT_GOAL := build
+.PHONY := clean decrypt encrypt build deploy run-local
+.DEFAULT_GOAL := run-local
 
 ifndef AWS_SESSION_TOKEN
   $(error Not logged in, please run 'awsume')
@@ -7,6 +7,7 @@ endif
 
 clean:
 	@rm -rf \
+	src/node_modules
 	terraform/.terraform \
 	terraform/.terraform.lock.hcl \
 	terraform/lambda.zip \
@@ -28,10 +29,13 @@ encrypt:
 		--query CiphertextBlob > terraform/secrets.yaml.encrypted
 
 build:
-	@IMAGE_ID=$$(docker image build -q src); \
+	@IMAGE_ID=$$(docker image build -q .); \
 	CONTAINER_ID=$$(docker container create $$IMAGE_ID); \
 	docker container cp $$CONTAINER_ID:/tmp/lambda.zip terraform/lambda.zip; \
 	docker container rm $$CONTAINER_ID
 
 deploy: build
 	@cd terraform; terraform init; terraform apply
+
+run-local:
+	@cd src; npm run local

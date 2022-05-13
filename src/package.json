@@ -1,0 +1,22 @@
+{
+  "name": "convert-jwt",
+  "type": "module",
+  "version": "2.0.0",
+  "description": "A serverless authentication solution which converts JSON Web Tokens to AWS Cloudfront Signed Cookies",
+  "main": "index.js",
+  "repository": "https://github.com/melvyndekort/convert-jwt.git",
+  "author": "Melvyn de Kort",
+  "license": "MIT",
+  "dependencies": {
+    "aws-cloudfront-sign": "^2.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^2.1.2"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-ssm": "^3.87.0",
+    "dotenv": "^16.0.1"
+  },
+  "scripts": {
+    "local": "node testHandler.js"
+  }
+}
