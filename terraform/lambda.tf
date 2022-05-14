@@ -11,7 +11,7 @@ resource "aws_lambda_function" "convert_jwt" {
   filename         = "lambda.zip"
   source_code_hash = filebase64sha256("lambda.zip")
 
-  runtime       = "nodejs16.x"
+  runtime       = "nodejs14.x"
   architectures = ["arm64"]
   memory_size   = 128
   timeout       = 8
