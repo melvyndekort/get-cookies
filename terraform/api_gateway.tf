@@ -36,20 +36,20 @@ resource "aws_apigatewayv2_stage" "auth" {
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.auth.arn
     format = jsonencode({
-  "requestId":               "$context.requestId",
-  "extendedRequestId":       "$context.extendedRequestId",
-  "ip":                      "$context.identity.sourceIp",
-  "caller":                  "$context.identity.caller",
-  "user":                    "$context.identity.user",
-  "requestTime":             "$context.requestTime",
-  "httpMethod":              "$context.httpMethod",
-  "resourcePath":            "$context.resourcePath",
-  "routeKey":                "$context.routeKey",
-  "status":                  "$context.status",
-  "protocol":                "$context.protocol",
-  "responseLength":          "$context.responseLength",
-  "integrationErrorMessage": "$context.integrationErrorMessage"
-})
+      "requestId" : "$context.requestId",
+      "extendedRequestId" : "$context.extendedRequestId",
+      "ip" : "$context.identity.sourceIp",
+      "caller" : "$context.identity.caller",
+      "user" : "$context.identity.user",
+      "requestTime" : "$context.requestTime",
+      "httpMethod" : "$context.httpMethod",
+      "resourcePath" : "$context.resourcePath",
+      "routeKey" : "$context.routeKey",
+      "status" : "$context.status",
+      "protocol" : "$context.protocol",
+      "responseLength" : "$context.responseLength",
+      "integrationErrorMessage" : "$context.integrationErrorMessage"
+    })
   }
 }
 
