@@ -1,6 +1,6 @@
-# Convert JWT
+# GET-COOKIES
 
-convert-jwt is a serverless authentication solution which converts a JWT token to AWS Cloudfront signed cookies
+get-cookies is a serverless authentication solution which converts a JWT token to AWS Cloudfront signed cookies
 
 ## Installation
 
@@ -16,9 +16,11 @@ deploy:  run the build target and then run terraform apply
 ```
 
 ## Contributing
+
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
 
 ## License
+
 [MIT](https://choosealicense.com/licenses/mit/)
