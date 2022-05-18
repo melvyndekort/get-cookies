@@ -1,5 +1,5 @@
 boto3
-boto
+botocore
 cryptography
 pyjwt
 requests

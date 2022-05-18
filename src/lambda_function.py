@@ -3,8 +3,9 @@ import jwt
 import requests
 import json
 import boto3
+import datetime
 
-from betterthanboto import BetterThanBoto
+from signed_cookie_generator import CookieGen
 
 def lambda_handler(event, context):
   try:
@@ -16,18 +17,20 @@ def lambda_handler(event, context):
                          audience=os.environ['CLIENT_ID'],
                          algorithms=["RS256"])
 
-    cf = BetterThanBoto()
-    cookies = cf.create_signed_cookies(url='/',
-                                       keypair_id=os.environ['KEY_ID'],
-                                       expires_at=decoded['exp'] * 1000,
-                                       private_key_string=get_signing_key())
+    expire_date = decoded['exp'] * 1000
 
-    reply = {
+    resource = event['headers']['origin'] + "/*"
+
+    cg = CookieGen()
+    cookies = cg.generate_expiring_signed_cookie(resource=resource,
+                                                 expire_date=expire_date,
+                                                 key_id=os.environ['KEY_ID'])
+
+    resp = {
       "statusCode": 200,
       "body": json.dumps(cookies)
     }
-    print(reply)
-    return reply
+    return resp
 
   except Exception as e:
     print(str(e))
@@ -44,14 +47,3 @@ def get_public_key(token):
 
     kid = jwt.get_unverified_header(token)['kid']
     return public_keys[kid]
-
-
-def get_signing_key():
-  ssm_client = boto3.client('ssm')
-
-  param = ssm_client.get_parameter(
-      Name=os.environ['CLOUDFRONT_PK_PATH'],
-      WithDecryption=True
-  )
-
-  return param['Parameter']['Value']
