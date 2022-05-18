@@ -5,8 +5,9 @@ RUN apt-get update && apt-get install -y zip
 RUN mkdir /var/lambda
 WORKDIR /var/lambda
 
-COPY . .
-
+COPY requirements.txt .
 RUN pip3 install -r requirements.txt -t .
+
+COPY . .
 
 RUN zip -qr /tmp/lambda.zip . -x requirements.txt -x Dockerfile
