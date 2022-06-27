@@ -1,6 +1,6 @@
 resource "aws_cognito_user_pool_client" "get_cookies" {
   name         = "get_cookies"
-  user_pool_id = data.terraform_remote_state.cloudsetup.outputs.sso_user_pool_id
+  user_pool_id = data.terraform_remote_state.cloudsetup.outputs.auth_user_pool_id
 
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows                  = ["code", "implicit"]
