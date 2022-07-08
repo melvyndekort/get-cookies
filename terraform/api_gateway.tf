@@ -1,60 +1,71 @@
-resource "aws_apigatewayv2_api" "api" {
-  name          = "get-cookies"
-  protocol_type = "HTTP"
+resource "aws_api_gateway_rest_api" "api" {
+  name = "get-cookies"
+}
 
-  cors_configuration {
-    allow_methods = ["GET", "OPTIONS"]
-    allow_origins = [
-      "https://example.melvyn.dev",
-    ]
+data "aws_iam_policy_document" "api" {
+  statement {
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    resources = [aws_api_gateway_rest_api.api.execution_arn]
+
+    condition {
+      test     = "IpAddress"
+      variable = "aws:SourceIp"
+
+      values = local.cloudflare_ips
+    }
   }
 }
 
-resource "aws_apigatewayv2_integration" "api" {
-  api_id                 = aws_apigatewayv2_api.api.id
-  integration_type       = "AWS_PROXY"
-  integration_uri        = aws_lambda_function.get_cookies.invoke_arn
-  payload_format_version = "2.0"
+resource "aws_api_gateway_resource" "api" {
+  parent_id   = aws_api_gateway_rest_api.api.root_resource_id
+  path_part   = "cookies"
+  rest_api_id = aws_api_gateway_rest_api.api.id
 }
 
-resource "aws_apigatewayv2_route" "api" {
-  api_id    = aws_apigatewayv2_api.api.id
-  route_key = "GET /cookies"
-  target    = "integrations/${aws_apigatewayv2_integration.api.id}"
+resource "aws_api_gateway_method" "api" {
+  http_method   = "GET"
+  authorization = "NONE"
+  resource_id   = aws_api_gateway_resource.api.id
+  rest_api_id   = aws_api_gateway_rest_api.api.id
 }
 
-resource "aws_cloudwatch_log_group" "api" {
-  name              = "/aws/apigateway/get-cookies"
-  retention_in_days = 14
+resource "aws_api_gateway_integration" "api" {
+  rest_api_id             = aws_api_gateway_rest_api.api.id
+  resource_id             = aws_api_gateway_resource.api.id
+  http_method             = aws_api_gateway_method.api.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.get_cookies.invoke_arn
 }
 
-resource "aws_apigatewayv2_stage" "default" {
-  api_id      = aws_apigatewayv2_api.api.id
-  name        = "$default"
-  auto_deploy = true
+resource "aws_api_gateway_deployment" "api" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
 
-  access_log_settings {
-    destination_arn = aws_cloudwatch_log_group.api.arn
-    format = jsonencode({
-      "requestId" : "$context.requestId",
-      "extendedRequestId" : "$context.extendedRequestId",
-      "ip" : "$context.identity.sourceIp",
-      "caller" : "$context.identity.caller",
-      "user" : "$context.identity.user",
-      "requestTime" : "$context.requestTime",
-      "httpMethod" : "$context.httpMethod",
-      "resourcePath" : "$context.resourcePath",
-      "routeKey" : "$context.routeKey",
-      "status" : "$context.status",
-      "protocol" : "$context.protocol",
-      "responseLength" : "$context.responseLength",
-      "integrationErrorMessage" : "$context.integrationErrorMessage"
-    })
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_resource.api.id,
+      aws_api_gateway_method.api.id,
+      aws_api_gateway_integration.api.id,
+    ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
-resource "aws_apigatewayv2_api_mapping" "api" {
-  api_id      = aws_apigatewayv2_api.api.id
-  domain_name = data.terraform_remote_state.cloudsetup.outputs.api_mdekort_domain_id
-  stage       = aws_apigatewayv2_stage.default.id
+resource "aws_api_gateway_stage" "prod" {
+  deployment_id = aws_api_gateway_deployment.api.id
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  stage_name    = "prod"
+}
+
+resource "aws_api_gateway_base_path_mapping" "api" {
+  api_id      = aws_api_gateway_rest_api.api.id
+  stage_name  = aws_api_gateway_stage.prod.stage_name
+  domain_name = data.terraform_remote_state.cloudsetup.outputs.api_mdekort_domain_name
 }

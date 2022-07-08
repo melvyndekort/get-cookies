@@ -27,8 +27,13 @@ def lambda_handler(event, context):
                                                  key_id=os.environ['KEY_ID'])
 
     resp = {
-      "statusCode": 200,
-      "body": json.dumps(cookies)
+      'statusCode': 200,
+      'headers': {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': event['headers']['origin'],
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+      },
+      'body': json.dumps(cookies)
     }
     return resp
 
