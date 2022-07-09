@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_log_group" "get_cookies" {
   name              = "/aws/lambda/get-cookies"
-  retention_in_days = 14
+  retention_in_days = 7
 }
 
 resource "aws_lambda_function" "get_cookies" {
