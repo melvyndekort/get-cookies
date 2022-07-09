@@ -39,7 +39,16 @@ def lambda_handler(event, context):
 
   except Exception as e:
     print(str(e))
-    raise Exception('Internal server error')
+    resp = {
+      'statusCode': 401,
+      'headers': {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': event['headers']['origin'],
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+      },
+      'body': 'Unauthorized'
+    }
+    return resp
 
 def get_public_key(token):
     resp = requests.get(os.environ['JWKS_URI'])

@@ -20,6 +20,11 @@ data "aws_iam_policy_document" "api" {
   }
 }
 
+resource "aws_api_gateway_rest_api_policy" "api" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  policy      = data.aws_iam_policy_document.api.json
+}
+
 resource "aws_api_gateway_resource" "api" {
   parent_id   = aws_api_gateway_rest_api.api.root_resource_id
   path_part   = "cookies"
@@ -58,10 +63,32 @@ resource "aws_api_gateway_deployment" "api" {
   }
 }
 
+resource "aws_cloudwatch_log_group" "api" {
+  name              = "/aws/apigateway/${aws_api_gateway_rest_api.api.name}"
+  retention_in_days = 14
+}
+
 resource "aws_api_gateway_stage" "prod" {
   deployment_id = aws_api_gateway_deployment.api.id
   rest_api_id   = aws_api_gateway_rest_api.api.id
   stage_name    = "prod"
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.api.arn
+    format = jsonencode({
+      "requestId" : "$context.requestId",
+      "extendedRequestId" : "$context.extendedRequestId",
+      "ip" : "$context.identity.sourceIp",
+      "caller" : "$context.identity.caller",
+      "user" : "$context.identity.user",
+      "requestTime" : "$context.requestTime",
+      "httpMethod" : "$context.httpMethod",
+      "resourcePath" : "$context.resourcePath",
+      "status" : "$context.status",
+      "protocol" : "$context.protocol",
+      "responseLength" : "$context.responseLength"
+    })
+  }
 }
 
 resource "aws_api_gateway_base_path_mapping" "api" {
