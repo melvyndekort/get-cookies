@@ -32,10 +32,14 @@ def lambda_handler(event, context):
     expire_date = decoded['exp'] * 1000
     logger.info(f'Token will expire at: {expire_date}')
 
+    private_key = get_private_key()
+    logger.info('Retrieved private key from parameter store')
+
     resource = event['headers']['origin'] + "/*"
     logger.info(f'Client came from: {resource}')
 
-    cookies = cookieGen.generate_expiring_signed_cookie(resource=resource,
+    cookies = cookieGen.generate_expiring_signed_cookie(private_key=private_key,
+                                                        resource=resource,
                                                         expire_date=expire_date,
                                                         key_id=os.environ['KEY_ID'])
     logger.info('Successfully generated signed cookies')
@@ -66,15 +70,27 @@ def lambda_handler(event, context):
     return resp
 
 def get_public_key(token):
-    resp = requests.get(os.environ['JWKS_URI'])
-    jwks = resp.json()
+  resp = requests.get(os.environ['JWKS_URI'])
+  jwks = resp.json()
 
-    public_keys = {}
-    for jwk in jwks['keys']:
-        kid = jwk['kid']
-        public_keys[kid] = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
+  public_keys = {}
+  for jwk in jwks['keys']:
+    kid = jwk['kid']
+    public_keys[kid] = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
 
-    kid = jwt.get_unverified_header(token)['kid']
-    logger.info(f'Found public key with id: {kid}')
+  kid = jwt.get_unverified_header(token)['kid']
+  logger.info(f'Found public key with id: {kid}')
 
-    return public_keys[kid]
+  return public_keys[kid]
+
+def get_private_key():
+  param = ssm_client.get_parameter(
+    Name=os.environ['CLOUDFRONT_PK_PATH'],
+    WithDecryption=True
+  )
+
+  private_key = serialization.load_pem_private_key(
+    data=param['Parameter']['Value'].encode(),
+    password=None,
+    backend=default_backend()
+  )
