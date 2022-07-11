@@ -25,7 +25,7 @@ class CookieGen:
     return base64.b64decode(data.replace(b'-', b'+').replace(b'_', b'=').replace(b'~', b'/'))
 
   def rsa_signer(self, message):
-    param = ssm_client.get_parameter(
+    param = self.ssm_client.get_parameter(
       Name=os.environ['CLOUDFRONT_PK_PATH'],
       WithDecryption=True
     )
