@@ -6,7 +6,7 @@ RUN mkdir /var/lambda
 WORKDIR /var/lambda
 
 COPY requirements.txt .
-RUN pip3 install -r requirements.txt -t .
+RUN pip3 install -U -r requirements.txt -t .
 
 COPY . .
 
