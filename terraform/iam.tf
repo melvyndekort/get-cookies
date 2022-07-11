@@ -52,6 +52,15 @@ data "aws_iam_policy_document" "get_cookies" {
   }
 }
 
+data "aws_iam_policy" "xray" {
+  name = "AWSXRayDaemonWriteAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "get_cookies_xray" {
+  role       = aws_iam_role.get_cookies.id
+  policy_arn = data.aws_iam_policy.xray.arn
+}
+
 resource "aws_iam_role_policy" "get_cookies" {
   name   = "get_cookies"
   role   = aws_iam_role.get_cookies.id
