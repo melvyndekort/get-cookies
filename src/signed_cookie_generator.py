@@ -3,7 +3,6 @@ import logging
 import time
 import json
 import base64
-import boto3
 
 from datetime import datetime
 from cryptography.hazmat.backends import default_backend
@@ -15,28 +14,13 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 class CookieGen:
-  def __init__(self, ssm_client):
-    self.ssm_client = ssm_client
-
   def aws_base64_encode(self, data):
     return base64.b64encode(data).replace(b'+', b'-').replace(b'=', b'_').replace(b'/', b'~')
 
   def aws_base64_decode(self, data):
     return base64.b64decode(data.replace(b'-', b'+').replace(b'_', b'=').replace(b'~', b'/'))
 
-  def rsa_signer(self, message):
-    param = self.ssm_client.get_parameter(
-      Name=os.environ['CLOUDFRONT_PK_PATH'],
-      WithDecryption=True
-    )
-
-    private_key = serialization.load_pem_private_key(
-      data=param['Parameter']['Value'].encode(),
-      password=None,
-      backend=default_backend()
-    )
-    logger.info('Retrieved private key from parameter store')
-
+  def rsa_signer(self, private_key, message):
     return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
 
   def make_policy(self, resource, expire_date):
@@ -52,11 +36,11 @@ class CookieGen:
     }
     return json.dumps(policy).replace(" ", "")
 
-  def generate_signed_cookie(self, key_id, policy, expire_date):
+  def generate_signed_cookie(self, private_key, key_id, policy, expire_date):
     policy = policy.encode('utf8')
     policy_b64 = self.aws_base64_encode(policy)
 
-    signature = self.rsa_signer(policy)
+    signature = self.rsa_signer(private_key, policy)
     signature_b64 = self.aws_base64_encode(signature)
 
     return {
@@ -72,7 +56,7 @@ class CookieGen:
     epoch_offset += offset_sec
     return epoch_offset
 
-  def generate_expiring_signed_cookie(self, resource, expire_date, key_id):
+  def generate_expiring_signed_cookie(self, private_key, resource, expire_date, key_id):
     policy = self.make_policy(resource, expire_date)
-    signed_cookie = self.generate_signed_cookie(key_id, policy, expire_date)
+    signed_cookie = self.generate_signed_cookie(private_key, key_id, policy, expire_date)
     return signed_cookie
