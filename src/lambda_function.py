@@ -6,20 +6,22 @@ import json
 import boto3
 import datetime
 
+from signed_cookie_generator import CookieGen
+
 from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.core import patch_all
 
-from signed_cookie_generator import CookieGen
-
-logging.basicConfig(level=logging.INFO)
 patch_all()
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
   try:
     token = event['queryStringParameters']['id_token']
 
     public_key = get_public_key(token)
-    logging.info(f'Found public key: {public_key}%s')
+    logger.info(f'Found public key: {public_key}%s')
 
     decoded = jwt.decode(token,
                          key=public_key,
@@ -27,16 +29,16 @@ def lambda_handler(event, context):
                          algorithms=["RS256"])
 
     expire_date = decoded['exp'] * 1000
-    logging.info(f'Token will expire at: {expire_date}')
+    logger.info(f'Token will expire at: {expire_date}')
 
     resource = event['headers']['origin'] + "/*"
-    logging.info(f'Client came from: {resource}')
+    logger.info(f'Client came from: {resource}')
 
     cg = CookieGen()
     cookies = cg.generate_expiring_signed_cookie(resource=resource,
                                                  expire_date=expire_date,
                                                  key_id=os.environ['KEY_ID'])
-    logging.info('Successfully generated signed cookies')
+    logger.info('Successfully generated signed cookies')
 
     resp = {
       'statusCode': 200,
@@ -50,7 +52,7 @@ def lambda_handler(event, context):
     return resp
 
   except Exception as e:
-    logging.exception("Exception occurred")
+    logger.exception("Exception occurred")
 
     resp = {
       'statusCode': 401,
