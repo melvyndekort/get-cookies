@@ -1,8 +1,9 @@
+import os
+import logging
 import time
 import json
 import base64
 import boto3
-import os
 
 from datetime import datetime
 from cryptography.hazmat.backends import default_backend
