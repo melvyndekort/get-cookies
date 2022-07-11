@@ -16,7 +16,6 @@ patch_all()
 
 from signed_cookie_generator import CookieGen
 ssm_client = boto3.client('ssm')
-cookieGen = CookieGen(ssm_client)
 
 def lambda_handler(event, context):
   try:
@@ -33,16 +32,15 @@ def lambda_handler(event, context):
     logger.info(f'Token will expire at: {expire_date}')
 
     private_key = get_private_key()
-    logger.info('Retrieved private key from parameter store')
 
     resource = event['headers']['origin'] + "/*"
     logger.info(f'Client came from: {resource}')
 
+    cookieGen = CookieGen()
     cookies = cookieGen.generate_expiring_signed_cookie(private_key=private_key,
                                                         resource=resource,
                                                         expire_date=expire_date,
                                                         key_id=os.environ['KEY_ID'])
-    logger.info('Successfully generated signed cookies')
 
     resp = {
       'statusCode': 200,
@@ -94,3 +92,7 @@ def get_private_key():
     password=None,
     backend=default_backend()
   )
+
+  logger.info('Retrieved private key from parameter store')
+
+  return private_key
