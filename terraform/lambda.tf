@@ -16,6 +16,10 @@ resource "aws_lambda_function" "get_cookies" {
   memory_size   = 128
   timeout       = 8
 
+  tracing_config {
+    mode = "Active"
+  }
+
   kms_key_arn = data.aws_kms_key.generic.arn
 
   environment {
