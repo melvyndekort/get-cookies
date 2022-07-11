@@ -11,15 +11,12 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 
-from aws_xray_sdk.core import xray_recorder
-from aws_xray_sdk.core import patch_all
-
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-patch_all()
-
 class CookieGen:
+  def __init__(self, ssm_client):
+    self.ssm_client = ssm_client
 
   def aws_base64_encode(self, data):
     return base64.b64encode(data).replace(b'+', b'-').replace(b'=', b'_').replace(b'/', b'~')
@@ -28,8 +25,6 @@ class CookieGen:
     return base64.b64decode(data.replace(b'-', b'+').replace(b'_', b'=').replace(b'~', b'/'))
 
   def rsa_signer(self, message):
-    ssm_client = boto3.client('ssm')
-
     param = ssm_client.get_parameter(
       Name=os.environ['CLOUDFRONT_PK_PATH'],
       WithDecryption=True

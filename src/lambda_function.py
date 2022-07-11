@@ -6,8 +6,6 @@ import json
 import boto3
 import datetime
 
-from signed_cookie_generator import CookieGen
-
 from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.core import patch_all
 
@@ -16,12 +14,15 @@ logger.setLevel(logging.INFO)
 
 patch_all()
 
+from signed_cookie_generator import CookieGen
+ssm_client = boto3.client('ssm')
+cookieGen = CookieGen(ssm_client)
+
 def lambda_handler(event, context):
   try:
     token = event['queryStringParameters']['id_token']
 
     public_key = get_public_key(token)
-    logger.info(f'Found public key: {public_key}')
 
     decoded = jwt.decode(token,
                          key=public_key,
@@ -34,10 +35,9 @@ def lambda_handler(event, context):
     resource = event['headers']['origin'] + "/*"
     logger.info(f'Client came from: {resource}')
 
-    cg = CookieGen()
-    cookies = cg.generate_expiring_signed_cookie(resource=resource,
-                                                 expire_date=expire_date,
-                                                 key_id=os.environ['KEY_ID'])
+    cookies = cookieGen.generate_expiring_signed_cookie(resource=resource,
+                                                        expire_date=expire_date,
+                                                        key_id=os.environ['KEY_ID'])
     logger.info('Successfully generated signed cookies')
 
     resp = {
@@ -75,4 +75,6 @@ def get_public_key(token):
         public_keys[kid] = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
 
     kid = jwt.get_unverified_header(token)['kid']
+    logger.info(f'Found public key with id: {kid}')
+
     return public_keys[kid]
