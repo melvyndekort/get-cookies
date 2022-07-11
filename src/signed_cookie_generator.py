@@ -59,4 +59,5 @@ class CookieGen:
   def generate_expiring_signed_cookie(self, private_key, resource, expire_date, key_id):
     policy = self.make_policy(resource, expire_date)
     signed_cookie = self.generate_signed_cookie(private_key, key_id, policy, expire_date)
+    logger.info('Successfully generated signed cookies')
     return signed_cookie
