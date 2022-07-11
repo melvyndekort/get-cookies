@@ -33,7 +33,7 @@ resource "aws_api_gateway_resource" "api" {
 
 resource "aws_api_gateway_method" "api" {
   http_method   = "GET"
-  authorization = "NONE"
+  authorization = "NONE" #tfsec:ignore:aws-api-gateway-no-public-access
   resource_id   = aws_api_gateway_resource.api.id
   rest_api_id   = aws_api_gateway_rest_api.api.id
 }
@@ -66,6 +66,7 @@ resource "aws_api_gateway_deployment" "api" {
 resource "aws_cloudwatch_log_group" "api" {
   name              = "/aws/apigateway/${aws_api_gateway_rest_api.api.name}"
   retention_in_days = 7
+  kms_key_id        = data.aws_kms_key.generic.arn
 }
 
 resource "aws_api_gateway_stage" "prod" {
