@@ -10,6 +10,14 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.core import patch_all
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+patch_all()
+
 class CookieGen:
 
   def aws_base64_encode(self, data):
@@ -31,6 +39,7 @@ class CookieGen:
       password=None,
       backend=default_backend()
     )
+    logger.info('Retrieved private key from parameter store')
 
     return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
 

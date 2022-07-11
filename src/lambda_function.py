@@ -11,17 +11,17 @@ from signed_cookie_generator import CookieGen
 from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.core import patch_all
 
-patch_all()
-
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+patch_all()
 
 def lambda_handler(event, context):
   try:
     token = event['queryStringParameters']['id_token']
 
     public_key = get_public_key(token)
-    logger.info(f'Found public key: {public_key}%s')
+    logger.info(f'Found public key: {public_key}')
 
     decoded = jwt.decode(token,
                          key=public_key,
