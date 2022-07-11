@@ -6,6 +6,9 @@ import json
 import boto3
 import datetime
 
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+
 from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.core import patch_all
 
