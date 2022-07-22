@@ -29,7 +29,7 @@ resource "aws_lambda_function" "get_cookies" {
   function_name = "get-cookies"
   role          = aws_iam_role.get_cookies.arn
   handler       = "lambda_function.lambda_handler"
-  layers        = [
+  layers = [
     var.adot_python,
     aws_lambda_layer_version.get_cookies.arn,
   ]
