@@ -9,13 +9,8 @@ import datetime
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 
-from aws_xray_sdk.core import xray_recorder
-from aws_xray_sdk.core import patch_all
-
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-
-patch_all()
 
 from signed_cookie_generator import CookieGen
 ssm_client = boto3.client('ssm')
