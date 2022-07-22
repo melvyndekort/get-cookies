@@ -13,7 +13,7 @@ resource "aws_s3_object" "get_cookies" {
   key         = "get_cookies/lambda.zip"
   source      = "lambda.zip"
   source_hash = filemd5("lambda.zip")
-  kms_key_id  = data.aws_kms_key.generic.id
+  kms_key_id  = data.aws_kms_key.generic.arn
 }
 
 resource "aws_lambda_layer_version" "get_cookies" {
