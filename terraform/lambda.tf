@@ -4,12 +4,6 @@ resource "aws_cloudwatch_log_group" "get_cookies" {
   kms_key_id        = data.aws_kms_key.generic.arn
 }
 
-locals {
-  #adot_python      = "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-arm64-ver-1-11-1:1"
-  adot_python      = "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-amd64-ver-1-11-1:1"
-  params_extension = "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension:2"
-}
-
 resource "aws_s3_object" "get_cookies" {
   bucket      = data.terraform_remote_state.cloudsetup.outputs.s3_lambda
   key         = "get_cookies/lambda.zip"
@@ -18,18 +12,26 @@ resource "aws_s3_object" "get_cookies" {
   kms_key_id  = data.aws_kms_key.generic.arn
 }
 
+resource "aws_lambda_layer_version" "get_cookies" {
+  layer_name        = "get-cookies"
+  s3_bucket         = aws_s3_object.get_cookies.bucket
+  s3_key            = aws_s3_object.get_cookies.id
+  s3_object_version = aws_s3_object.get_cookies.version_id
+
+  compatible_architectures = ["x86_64"]
+  compatible_runtimes      = ["python3.9"]
+}
+
 resource "aws_lambda_function" "get_cookies" {
   function_name = "get-cookies"
   role          = aws_iam_role.get_cookies.arn
   handler       = "lambda_function.lambda_handler"
-  layers = [
-    local.adot_python,
-    local.params_extension,
-  ]
 
-  s3_bucket         = aws_s3_object.get_cookies.bucket
-  s3_key            = aws_s3_object.get_cookies.id
-  s3_object_version = aws_s3_object.get_cookies.version_id
+  layers = [
+    "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-amd64-ver-1-11-1:1",
+    "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension:2",
+    aws_lambda_layer_version.get_cookies.arn,
+  ]
 
   runtime       = "python3.9"
   architectures = ["x86_64"]
