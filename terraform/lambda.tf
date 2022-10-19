@@ -23,8 +23,8 @@ resource "aws_lambda_layer_version" "get_cookies" {
   s3_key            = aws_s3_object.get_cookies.id
   s3_object_version = aws_s3_object.get_cookies.version_id
 
-  compatible_runtimes = ["python3.9"]
-  #compatible_architectures = ["arm64"]
+  compatible_architectures = ["x86_64"]
+  compatible_runtimes      = ["python3.9"]
 }
 
 resource "aws_lambda_function" "get_cookies" {
@@ -37,10 +37,10 @@ resource "aws_lambda_function" "get_cookies" {
     aws_lambda_layer_version.get_cookies.arn,
   ]
 
-  runtime     = "python3.9"
-  memory_size = 128
-  timeout     = 8
-  #architectures = ["arm64"]
+  runtime       = "python3.9"
+  architectures = ["x86_64"]
+  memory_size   = 128
+  timeout       = 8
 
   tracing_config {
     mode = "Active"
