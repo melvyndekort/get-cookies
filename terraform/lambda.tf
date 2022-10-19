@@ -18,7 +18,7 @@ resource "aws_s3_object" "get_cookies" {
 }
 
 resource "aws_lambda_layer_version" "get_cookies" {
-  layer_name        = "function_code"
+  layer_name        = "get-cookies"
   s3_bucket         = aws_s3_object.get_cookies.bucket
   s3_key            = aws_s3_object.get_cookies.id
   s3_object_version = aws_s3_object.get_cookies.version_id
