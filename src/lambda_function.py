@@ -81,10 +81,10 @@ def get_private_key():
   param_name = os.environ['CLOUDFRONT_PK_PATH']
   url = f'http://localhost:2773/systemsmanager/parameters/get?name={param_name}&withDecryption=true'
   headers = {'X-Aws-Parameters-Secrets-Token': os.environ['AWS_SESSION_TOKEN']}
-  response = requests.get(url, headers=headers).json()
+  param = requests.get(url, headers=headers).json()
 
   private_key = serialization.load_pem_private_key(
-    data=response['Parameter']['Value'].encode(),
+    data=param['Parameter']['Value'].encode(),
     password=None,
     backend=default_backend()
   )
