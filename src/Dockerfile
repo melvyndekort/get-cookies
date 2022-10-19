@@ -1,6 +1,6 @@
-FROM python:3.9-slim
+FROM public.ecr.aws/lambda/python:3.9
 
-RUN apt-get update && apt-get install -y zip
+RUN yum install -y zip
 
 RUN mkdir /var/lambda
 WORKDIR /var/lambda
