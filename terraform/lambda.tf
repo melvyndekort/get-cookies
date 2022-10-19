@@ -17,16 +17,6 @@ resource "aws_s3_object" "get_cookies" {
   kms_key_id  = data.aws_kms_key.generic.arn
 }
 
-resource "aws_lambda_layer_version" "get_cookies" {
-  layer_name        = "get-cookies"
-  s3_bucket         = aws_s3_object.get_cookies.bucket
-  s3_key            = aws_s3_object.get_cookies.id
-  s3_object_version = aws_s3_object.get_cookies.version_id
-
-  compatible_architectures = ["x86_64"]
-  compatible_runtimes      = ["python3.9"]
-}
-
 resource "aws_lambda_function" "get_cookies" {
   function_name = "get-cookies"
   role          = aws_iam_role.get_cookies.arn
@@ -34,8 +24,11 @@ resource "aws_lambda_function" "get_cookies" {
   layers = [
     local.adot_python,
     local.params_extension,
-    aws_lambda_layer_version.get_cookies.arn,
   ]
+
+  s3_bucket         = aws_s3_object.get_cookies.bucket
+  s3_key            = aws_s3_object.get_cookies.id
+  s3_object_version = aws_s3_object.get_cookies.version_id
 
   runtime       = "python3.9"
   architectures = ["x86_64"]
