@@ -6,7 +6,7 @@ resource "aws_cloudwatch_log_group" "get_cookies" {
 
 locals {
   #adot_python      = "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-arm64-ver-1-11-1:1"
-  adot_python      = "arn:aws:lambda:\<region>:901920570463:layer:aws-otel-python-amd64-ver-1-11-1:1"
+  adot_python      = "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-amd64-ver-1-11-1:1"
   params_extension = "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension:2"
 }
 
