@@ -4,8 +4,9 @@ resource "aws_cloudwatch_log_group" "get_cookies" {
   kms_key_id        = data.aws_kms_key.generic.arn
 }
 
-variable "adot_python" {
-  default = "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-arm64-ver-1-11-1:1"
+locals {
+  adot_python      = "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-arm64-ver-1-11-1:1"
+  params_extension = "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension:2"
 }
 
 resource "aws_s3_object" "get_cookies" {
@@ -22,8 +23,8 @@ resource "aws_lambda_layer_version" "get_cookies" {
   s3_key            = aws_s3_object.get_cookies.id
   s3_object_version = aws_s3_object.get_cookies.version_id
 
-  compatible_runtimes      = ["python3.9"]
-  compatible_architectures = ["arm64"]
+  compatible_runtimes = ["python3.9"]
+  #compatible_architectures = ["arm64"]
 }
 
 resource "aws_lambda_function" "get_cookies" {
@@ -31,14 +32,15 @@ resource "aws_lambda_function" "get_cookies" {
   role          = aws_iam_role.get_cookies.arn
   handler       = "lambda_function.lambda_handler"
   layers = [
-    var.adot_python,
+    local.adot_python,
+    local.params_extension,
     aws_lambda_layer_version.get_cookies.arn,
   ]
 
-  runtime       = "python3.9"
-  architectures = ["arm64"]
-  memory_size   = 128
-  timeout       = 8
+  runtime     = "python3.9"
+  memory_size = 128
+  timeout     = 8
+  #architectures = ["arm64"]
 
   tracing_config {
     mode = "Active"

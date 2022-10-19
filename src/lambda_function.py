@@ -3,7 +3,6 @@ import logging
 import jwt
 import requests
 import json
-import boto3
 import datetime
 
 from cryptography.hazmat.backends import default_backend
@@ -13,7 +12,6 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 from signed_cookie_generator import CookieGen
-ssm_client = boto3.client('ssm')
 
 def lambda_handler(event, context):
   try:
@@ -80,13 +78,11 @@ def get_public_key(token):
   return public_keys[kid]
 
 def get_private_key():
-  param = ssm_client.get_parameter(
-    Name=os.environ['CLOUDFRONT_PK_PATH'],
-    WithDecryption=True
-  )
+  param_name = os.environ['CLOUDFRONT_PK_PATH']
+  response = requests.get(f'/systemsmanager/parameters/get?name={param_name}&withDecryption=true')
 
   private_key = serialization.load_pem_private_key(
-    data=param['Parameter']['Value'].encode(),
+    data=response.content,
     password=None,
     backend=default_backend()
   )

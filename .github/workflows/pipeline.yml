@@ -25,10 +25,10 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: "{{defaultContext}}:src"
-          platforms: linux/arm64
           push: false
           load: true
           tags: myimage:latest
+          #platforms: linux/arm64
 
       - name: Copy artifact from docker image
         run: |
