@@ -79,7 +79,7 @@ def get_public_key(token):
 
 def get_private_key():
   param_name = os.environ['CLOUDFRONT_PK_PATH']
-  response = requests.get(f'/systemsmanager/parameters/get?name={param_name}&withDecryption=true')
+  response = requests.get(f'http://localhost:2773/systemsmanager/parameters/get?name={param_name}&withDecryption=true')
 
   private_key = serialization.load_pem_private_key(
     data=response.content,
