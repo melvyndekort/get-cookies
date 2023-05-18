@@ -9,11 +9,12 @@ terraform {
 }
 
 data "terraform_remote_state" "cloudsetup" {
-  backend = "s3"
+  backend = "remote"
 
   config = {
-    bucket = "mdekort.tfstate"
-    key    = "cloudsetup.tfstate"
-    region = "eu-west-1"
+    organization = "melvyndekort"
+    workspaces   = {
+      name = "cloudsetup"
+    }
   }
 }
