@@ -1,4 +1,12 @@
 terraform {
+  cloud {
+    organization = "melvyndekort"
+
+    workspaces {
+      name = "get-cookies"
+    }
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
