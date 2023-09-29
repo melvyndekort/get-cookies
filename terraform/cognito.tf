@@ -14,6 +14,8 @@ resource "aws_cognito_user_pool_client" "get_cookies" {
 
   callback_urls = [
     "https://example.melvyn.dev/callback.html",
-    "https://example.melvyn.dev"
+    "https://example.melvyn.dev",
+    "https://startpage.mdekort.nl/callback.html",
+    "https://startpage.mdekort.nl"
   ]
 }
