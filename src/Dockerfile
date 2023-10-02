@@ -1,13 +1,17 @@
-FROM public.ecr.aws/lambda/python:3.9
+FROM python:3.9-slim
 
-RUN yum install -y zip
+RUN apt-get update
+RUN apt-get install -y zip
 
-RUN mkdir /var/lambda
+RUN python -m pip install poetry
+
+RUN mkdir -p /var/lambda
 WORKDIR /var/lambda
-
-COPY requirements.txt .
-RUN pip3 install -U -r requirements.txt -t .
 
 COPY . .
 
-RUN zip -qr /tmp/lambda.zip . -x requirements.txt -x Dockerfile
+RUN poetry build
+RUN poetry run pip install --upgrade -t package dist/*.whl
+
+WORKDIR /var/lambda/package
+RUN zip -r /tmp/lambda.zip . -x '*.pyc'

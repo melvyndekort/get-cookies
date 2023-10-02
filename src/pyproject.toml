@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "get-cookies"
+version = "0.1.0"
+description = ""
+authors = ["Melvyn de Kort <melvyn@mdekort.nl>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+cryptography = "^41.0.4"
+PyJWT = "^2.8.0"
+requests = "^2.31.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+boto3 = "^1.28.57"
+moto = "^4.2.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

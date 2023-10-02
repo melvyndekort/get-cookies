@@ -28,10 +28,11 @@ encrypt:
 		--query CiphertextBlob > terraform/secrets.yaml.encrypted
 
 build:
-	@IMAGE_ID=$$(docker image build -q src); \
+	@IMAGE_ID=$$(docker buildx build -q src); \
 	CONTAINER_ID=$$(docker container create $$IMAGE_ID); \
 	docker container cp $$CONTAINER_ID:/tmp/lambda.zip terraform/lambda.zip; \
-	docker container rm $$CONTAINER_ID
+	docker container rm $$CONTAINER_ID; \
+	docker image rm $$IMAGE_ID
 
 deploy: build
 	@cd terraform; terraform init; terraform apply
