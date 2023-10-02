@@ -2,11 +2,9 @@ name: "Pipeline"
 
 on:
   push:
-    paths-ignore:
-      - 'README.md'
-      - 'Makefile'
-      - 'example-event.json'
-      - 'LICENSE.md'
+    paths:
+      - 'src/'
+      - 'terraform/'
     branches:
       - main
   pull_request:
@@ -62,7 +60,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-1
           role-to-assume: arn:aws:iam::075673041815:role/external/deployer
