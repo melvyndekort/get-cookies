@@ -34,5 +34,8 @@ build:
 	docker container rm $$CONTAINER_ID; \
 	docker image rm $$IMAGE_ID
 
+test:
+	@cd src; poetry run pytest
+
 deploy: build
 	@cd terraform; terraform init; terraform apply

@@ -15,7 +15,7 @@ resource "aws_s3_object" "get_cookies" {
 resource "aws_lambda_function" "get_cookies" {
   function_name = "get-cookies"
   role          = aws_iam_role.get_cookies.arn
-  handler       = "get_cookies/lambda_function.lambda_handler"
+  handler       = "get_cookies.handler.handle"
 
   s3_bucket         = aws_s3_object.get_cookies.bucket
   s3_key            = aws_s3_object.get_cookies.id
