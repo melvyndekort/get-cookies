@@ -1,7 +1,8 @@
 import os
 import logging
 import json
-import converter
+
+from get_cookies import converter
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
