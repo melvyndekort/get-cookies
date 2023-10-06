@@ -1,9 +1,5 @@
 import pytest
-import time
 import os
-import json
-import jwt
-import base64
 import requests
 
 from cryptography.hazmat.primitives.serialization import load_pem_public_key
@@ -13,8 +9,6 @@ from get_cookies import authenticator
 
 #def test_get_public_key_success_single(monkeypatch, der, matching_jwks, valid_token):
 #  #requests_mock.get('http://matching', text=matching_jwks)
-#
-#  monkeypatch.setattr(authenticator, 'public_keys', {})
 #
 #  key = authenticator.get_public_key(valid_token)
 #  expected = serialization.load_der_public_key(der)
