@@ -1,10 +1,7 @@
 import pytest
 import time
 import os
-import json
 import jwt
-import base64
-import requests
 
 from cryptography.hazmat.primitives.serialization import load_pem_public_key
 
