@@ -1,6 +1,7 @@
 import logging
-import authenticator
-import signer
+
+from get_cookies import authenticator
+from get_cookies import signer
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
