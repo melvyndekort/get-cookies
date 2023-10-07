@@ -13,6 +13,4 @@ def get_cookies(token, origin):
   resource = origin + "/*"
   logger.info(f'Client came from: {resource}')
 
-  return signer.generate_expiring_signed_cookie(private_key=private_key,
-                                                resource=resource,
-                                                expire_date=expire_date)
+  return signer.generate_expiring_signed_cookie(resource=resource, expire_date=expire_date)

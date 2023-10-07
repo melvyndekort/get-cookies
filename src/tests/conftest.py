@@ -4,7 +4,12 @@ import requests
 import json
 
 @pytest.fixture
-def init_signer(requests_mock):
+def prep_authenticator(requests_mock):
+  os.environ['JWKS_LIST'] = 'http://localhost'
+  requests_mock.get('http://localhost', text='{}')
+
+@pytest.fixture
+def prep_signer(requests_mock):
   os.environ['CLOUDFRONT_PK_PATH'] = 'test'
   param = {
     'Parameter': {
