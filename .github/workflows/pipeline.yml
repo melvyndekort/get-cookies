@@ -14,9 +14,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: src
     steps:
       - uses: actions/checkout@master
       - name: Setup Python
@@ -24,6 +21,7 @@ jobs:
         with:
           python-version: 3.9
       - name: Generate coverage report
+        working-directory: src
         run: |
           pip install poetry
           poetry install
@@ -36,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lambda-archive
-          path: lambda.zip
+          path: src/lambda.zip
 
   deploy:
     permissions:
