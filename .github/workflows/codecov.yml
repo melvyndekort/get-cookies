@@ -4,14 +4,12 @@ on:
   workflow_dispatch:
   push:
     paths:
+      - '.github/workflows/codecov.yml'
       - 'src/'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: src
     steps:
       - uses: actions/checkout@master
       - name: Setup Python
@@ -19,6 +17,7 @@ jobs:
         with:
           python-version: 3.9
       - name: Generate coverage report
+        working-directory: src
         run: |
           pip install poetry
           poetry install
@@ -29,3 +28,12 @@ jobs:
         with:
           name: python-coverage
           path: src/coverage.xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          files: src/coverage.xml
+          flags: unittests
+          verbose: true
