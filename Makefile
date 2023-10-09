@@ -28,11 +28,14 @@ encrypt:
 		--query CiphertextBlob > terraform/secrets.yaml.encrypted
 
 build:
-	@IMAGE_ID=$$(docker buildx build -q src); \
-	CONTAINER_ID=$$(docker container create $$IMAGE_ID); \
-	docker container cp $$CONTAINER_ID:/tmp/lambda.zip terraform/lambda.zip; \
-	docker container rm $$CONTAINER_ID; \
-	docker image rm $$IMAGE_ID
+	@cd src; \
+	poetry install && \
+	poetry run pytest && \
+	poetry build && \
+	poetry run pip install --upgrade --platform manylinux2014_x86_64 --only-binary=:all: -t package dist/*.whl && \
+	cd package && \
+  zip -r ../lambda.zip . -x '*.pyc' && \
+	mv ../lambda.zip ../../terraform/lambda.zip
 
 test:
 	@cd src; poetry run pytest
