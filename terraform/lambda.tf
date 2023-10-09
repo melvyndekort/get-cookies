@@ -40,7 +40,7 @@ resource "aws_lambda_function" "get_cookies" {
     variables = {
       CLIENT_ID               = aws_cognito_user_pool_client.get_cookies.id
       KEY_ID                  = aws_cloudfront_public_key.public_key.id
-      JWKS_URI                = "https://${data.terraform_remote_state.cloudsetup.outputs.auth_user_pool_endpoint}/.well-known/jwks.json"
+      JWKS_LIST               = "https://${data.terraform_remote_state.cloudsetup.outputs.auth_user_pool_endpoint}/.well-known/jwks.json"
       CLOUDFRONT_PK_PATH      = aws_ssm_parameter.private_key.name
       AWS_LAMBDA_EXEC_WRAPPER = "/opt/otel-instrument"
     }

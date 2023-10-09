@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-python@master
         with:
           python-version: 3.9
-      - name: Generate coverage report
+      - name: Generate lambda artifact
         working-directory: src
         run: |
           pip install --upgrade pip
