@@ -26,7 +26,7 @@ def handle(event, context):
     return resp
 
   except Exception as e:
-    logger.exception("Exception occurred")
+    logger.exception(f'Exception occurred: {e}')
 
     resp = {
       'statusCode': 401,
