@@ -23,7 +23,6 @@ resource "aws_lambda_function" "get_cookies" {
 
   layers = [
     "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-amd64-ver-1-11-1:1",
-    "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension:2",
   ]
 
   runtime       = "python3.9"
