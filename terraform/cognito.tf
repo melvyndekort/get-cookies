@@ -7,6 +7,16 @@ resource "aws_cognito_user_pool_client" "get_cookies" {
   allowed_oauth_scopes                 = ["email", "openid"]
   supported_identity_providers         = ["COGNITO"]
 
+  token_validity_units {
+    access_token  = "hours"
+    id_token      = "hours"
+    refresh_token = "hours"
+  }
+
+  access_token_validity  = 24
+  id_token_validity      = 24
+  refresh_token_validity = 24
+
   explicit_auth_flows = [
     "ALLOW_USER_PASSWORD_AUTH",
     "ALLOW_REFRESH_TOKEN_AUTH"
