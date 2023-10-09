@@ -1,0 +1,22 @@
+{
+  "resource": "/",
+  "path": "/",
+  "httpMethod": "GET",
+  "requestContext": {
+    "resourcePath": "/",
+    "httpMethod": "GET",
+    "path": "/test/"
+  },
+  "headers": {
+    "origin": "http://localhost"
+  },
+  "multiValueHeaders": null,
+  "queryStringParameters": {
+    "id_token": "foobar"
+  },
+  "multiValueQueryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "body": null,
+  "isBase64Encoded": false
+}
