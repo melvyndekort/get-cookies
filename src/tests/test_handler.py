@@ -21,7 +21,7 @@ def test_success(monkeypatch, api_gw_event):
   assert resp['body'] == '"test"'
   assert resp['headers']['Access-Control-Allow-Origin'] == 'http://localhost'
 
-def test_success(monkeypatch, api_gw_event):
+def test_fail(monkeypatch, api_gw_event):
   from get_cookies import handler
 
   def get_cookies(token, origin):
