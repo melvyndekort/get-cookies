@@ -6,6 +6,9 @@ on:
     paths:
       - '.github/workflows/codecov.yml'
       - 'src/'
+    branches:
+      - main
+  pull_request:
 
 jobs:
   build:
