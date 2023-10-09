@@ -3,6 +3,8 @@ import time
 import os
 import jwt
 
+from pathlib import Path
+
 from cryptography.hazmat.primitives.serialization import load_pem_public_key
 
 os.environ['JWKS_LIST'] = ''
@@ -13,16 +15,7 @@ from get_cookies import authenticator
 ##
 @pytest.fixture
 def public_key():
-  pubkey = """-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu1SU1LfVLPHCozMxH2Mo
-4lgOEePzNm0tRgeLezV6ffAt0gunVTLw7onLRnrq0/IzW7yWR7QkrmBL7jTKEn5u
-+qKhbwKfBstIs+bMY2Zkp18gnTxKLxoS2tFczGkPLPgizskuemMghRniWaoLcyeh
-kd3qqGElvW/VDL5AaWTg0nLVkjRo9z+40RQzuVaE8AkAFmxZzow3x+VJYKdjykkJ
-0iT9wCS0DRTXu269V264Vf/3jvredZiKRkgwlL9xNAwxXFg0x/XFw005UWVRIkdg
-cKWTjpBP2dPwVZ4WWC+9aGVd+Gyn1o0CLelf4rEjGoXbAAEgAqeGUxrcIlbjXfbc
-mwIDAQAB
------END PUBLIC KEY-----
-"""
+  pubkey = Path('tests/public.pem').read_text()
   return load_pem_public_key(bytes(pubkey, 'utf-8'))
 
 @pytest.fixture

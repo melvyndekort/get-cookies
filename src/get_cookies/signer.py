@@ -3,7 +3,7 @@ import logging
 import time
 import json
 import base64
-import requests
+import boto3
 
 from datetime import datetime
 
@@ -12,13 +12,15 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
 
+client = boto3.client('ssm')
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-param_name = os.environ['CLOUDFRONT_PK_PATH']
-url = f'http://localhost:2773/systemsmanager/parameters/get?name={param_name}&withDecryption=true'
-headers = {'X-Aws-Parameters-Secrets-Token': os.environ['AWS_SESSION_TOKEN']}
-param = requests.get(url, headers=headers).json()
+param = client.get_parameter(
+  Name=os.environ['CLOUDFRONT_PK_PATH'],
+  WithDecryption=True
+)
 
 private_key = serialization.load_pem_private_key(
   data=param['Parameter']['Value'].encode(),
