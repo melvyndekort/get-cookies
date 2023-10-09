@@ -10,7 +10,11 @@ clean:
 	terraform/.terraform \
 	terraform/.terraform.lock.hcl \
 	terraform/lambda.zip \
-	terraform/secrets.yaml
+	terraform/secrets.yaml \
+	src/.pytest_cache \
+	src/*/__pycache__ \
+	src/dist \
+	src/package
 
 decrypt:
 	@aws kms decrypt \
