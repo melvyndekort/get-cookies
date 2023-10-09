@@ -14,7 +14,7 @@ def handle(event, context):
 
     cookies = converter.get_cookies(token, origin)
 
-    resp = {
+    return {
       'statusCode': 200,
       'headers': {
         'Access-Control-Allow-Headers': 'Content-Type',
@@ -23,12 +23,11 @@ def handle(event, context):
       },
       'body': json.dumps(cookies)
     }
-    return resp
 
   except Exception as e:
     logger.exception(f'Exception occurred: {e}')
 
-    resp = {
+    return {
       'statusCode': 401,
       'headers': {
         'Access-Control-Allow-Headers': 'Content-Type',
@@ -37,4 +36,3 @@ def handle(event, context):
       },
       'body': 'Unauthorized'
     }
-    return resp
