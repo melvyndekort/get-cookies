@@ -12,28 +12,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src
     steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build artifact in docker image
-        uses: docker/build-push-action@v3
+      - uses: actions/checkout@master
+      - name: Setup Python
+        uses: actions/setup-python@master
         with:
-          context: "{{defaultContext}}:src"
-          platforms: linux/x86_64
-          push: false
-          load: true
-          tags: myimage:latest
-
-      - name: Copy artifact from docker image
+          python-version: 3.9
+      - name: Generate coverage report
         run: |
-          CONTAINER_ID=$(docker create myimage:latest)
-          docker cp ${CONTAINER_ID}:/tmp/lambda.zip lambda.zip
-          docker rm ${CONTAINER_ID}
-
+          pip install poetry
+          poetry install
+          poetry build
+          poetry run pip install --upgrade -t package dist/*.whl
+          cd package
+          zip -r ../lambda.zip . -x '*.pyc'
       - name: Archive artifact
         if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
