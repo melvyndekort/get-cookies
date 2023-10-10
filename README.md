@@ -1,5 +1,7 @@
 # GET-COOKIES
 
+[![codecov](https://codecov.io/gh/melvyndekort/get-cookies/graph/badge.svg?token=LBLJ255JF3)](https://codecov.io/gh/melvyndekort/get-cookies)
+
 get-cookies is a serverless authentication solution which converts a JWT token to AWS Cloudfront signed cookies
 
 ## Installation
