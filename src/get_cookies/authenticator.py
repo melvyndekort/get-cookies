@@ -3,7 +3,7 @@ import logging
 import jwt
 import requests
 import json
-import urllib
+import validators
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
@@ -13,7 +13,7 @@ logger.setLevel(logging.INFO)
 
 public_keys = {}
 for jwks_uri in os.environ['JWKS_LIST'].split(","):
-  if urllib.parse.urlparse(jwks_uri).scheme not in ('http', 'https'):
+  if not validators.url(jwks_uri):
     logger.error(f'Invalid JWKS URI: {jwks_uri}')
     continue
 
