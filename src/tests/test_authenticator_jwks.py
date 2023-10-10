@@ -42,17 +42,17 @@ def matching_jwks():
 
 @pytest.fixture(scope="function")
 def init_authenticator_one(requests_mock, matching_jwks):
-  requests_mock.get('http://matching', text=matching_jwks)
+  requests_mock.get('https://example.com/matching', text=matching_jwks)
 
-  os.environ['JWKS_LIST'] = 'http://matching'
+  os.environ['JWKS_LIST'] = 'https://example.com/matching'
   return importlib.reload(authenticator)
 
 @pytest.fixture(scope="function")
 def init_authenticator_two(requests_mock, matching_jwks, non_matching_jwks):
-  requests_mock.get('http://matching', text=matching_jwks)
-  requests_mock.get('http://non-matching', text=non_matching_jwks)
+  requests_mock.get('https://example.com/matching', text=matching_jwks)
+  requests_mock.get('https://example.com/non-matching', text=non_matching_jwks)
 
-  os.environ['JWKS_LIST'] = 'http://matching,http://non-matching'
+  os.environ['JWKS_LIST'] = 'https://example.com/matching,https://example.com/non-matching'
   return importlib.reload(authenticator)
 
 
