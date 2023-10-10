@@ -15,9 +15,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
       - name: Setup Python
-        uses: actions/setup-python@master
+        uses: actions/setup-python@v3
         with:
           python-version: 3.9
       - name: Generate lambda artifact
@@ -53,7 +53,7 @@ jobs:
         working-directory: terraform
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -88,7 +88,7 @@ jobs:
         run: terraform plan -no-color
         continue-on-error: true
 
-      - uses: actions/github-script@0.9.0
+      - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
@@ -110,7 +110,7 @@ jobs:
 
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
 
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
