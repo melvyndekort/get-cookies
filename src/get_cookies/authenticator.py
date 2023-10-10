@@ -27,14 +27,14 @@ for jwks_uri in os.environ['JWKS_LIST'].split(","):
 
 def get_expiration(token):
   public_key = get_public_key(token)
-  audience = os.environ['CLIENT_ID']
+  audience_list = os.environ['CLIENT_ID_LIST'].split(',')
   options = {
     "require": ["email"]
   }
 
   decoded = jwt.decode(token,
                        key=public_key,
-                       audience=audience,
+                       audience=audience_list,
                        algorithms=["RS256"],
                        options=options)
 

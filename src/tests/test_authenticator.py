@@ -63,21 +63,21 @@ def test_get_public_key_failure(monkeypatch, token_valid):
   assert key == None
 
 def test_get_expiration_success(public_key_available, token_valid):
-  os.environ['CLIENT_ID'] = 'pytest'
+  os.environ['CLIENT_ID_LIST'] = 'foo,pytest,bar'
   exp = authenticator.get_expiration(token_valid)
   assert exp > time.time()
 
 def test_get_expiration_expired(public_key_available, token_expired):
-  os.environ['CLIENT_ID'] = 'pytest'
+  os.environ['CLIENT_ID_LIST'] = 'pytest'
   with pytest.raises(jwt.exceptions.ExpiredSignatureError):
     exp = authenticator.get_expiration(token_expired)
 
 def test_get_expiration_incorrect_audience(public_key_available, token_valid):
-  os.environ['CLIENT_ID'] = 'fail'
+  os.environ['CLIENT_ID_LIST'] = 'fail,foobar'
   with pytest.raises(jwt.exceptions.InvalidAudienceError):
     exp = authenticator.get_expiration(token_valid)
 
 def test_get_expiration_missing_email_claim(public_key_available, token_missing_email):
-  os.environ['CLIENT_ID'] = 'pytest'
+  os.environ['CLIENT_ID_LIST'] = 'pytest'
   with pytest.raises(jwt.exceptions.MissingRequiredClaimError):
     exp = authenticator.get_expiration(token_missing_email)

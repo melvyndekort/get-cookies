@@ -38,7 +38,7 @@ resource "aws_lambda_function" "get_cookies" {
 
   environment {
     variables = {
-      CLIENT_ID               = aws_cognito_user_pool_client.get_cookies.id
+      CLIENT_ID_LIST          = aws_cognito_user_pool_client.get_cookies.id
       KEY_ID                  = aws_cloudfront_public_key.public_key.id
       JWKS_LIST               = "https://${data.terraform_remote_state.cloudsetup.outputs.auth_user_pool_endpoint}/.well-known/jwks.json"
       CLOUDFRONT_PK_PATH      = aws_ssm_parameter.private_key.name
