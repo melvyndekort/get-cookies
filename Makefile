@@ -11,6 +11,7 @@ clean:
 	terraform/.terraform.lock.hcl \
 	terraform/lambda.zip \
 	terraform/secrets.yaml \
+	lambda.zip \
 	.pytest_cache \
 	*/__pycache__ \
 	dist \
