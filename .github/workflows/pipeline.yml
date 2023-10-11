@@ -3,10 +3,6 @@ name: "Pipeline"
 on:
   workflow_dispatch:
   push:
-    paths:
-      - '.github/workflows/pipeline.yml'
-      - 'src/**'
-      - 'terraform/**'
     branches:
       - main
   pull_request:
@@ -21,7 +17,6 @@ jobs:
         with:
           python-version: 3.9
       - name: Generate lambda artifact
-        working-directory: src
         run: |
           pip install --upgrade pip
           pip install poetry
@@ -36,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lambda-archive
-          path: src/lambda.zip
+          path: lambda.zip
 
   deploy:
     permissions:

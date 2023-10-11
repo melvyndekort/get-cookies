@@ -5,7 +5,10 @@ on:
   push:
     paths:
       - '.github/workflows/codecov.yml'
-      - 'src/**'
+      - 'get_cookies/**'
+      - 'tests/**'
+      - 'pyproject.toml'
+      - 'poetry.lock'
 
 jobs:
   build:
@@ -17,7 +20,6 @@ jobs:
         with:
           python-version: 3.9
       - name: Generate coverage report
-        working-directory: src
         run: |
           pip install poetry
           poetry install
@@ -27,13 +29,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: python-coverage
-          path: src/coverage.xml
+          path: coverage.xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
-          files: src/coverage.xml
+          files: coverage.xml
           flags: unittests
           verbose: true
