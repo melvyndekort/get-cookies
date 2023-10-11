@@ -11,7 +11,6 @@ clean:
 	terraform/.terraform.lock.hcl \
 	terraform/lambda.zip \
 	terraform/secrets.yaml \
-	lambda.zip \
 	.pytest_cache \
 	*/__pycache__ \
 	dist \
@@ -37,14 +36,13 @@ build:
 	poetry run pytest && \
 	poetry build && \
 	poetry run pip install --upgrade --platform manylinux2014_x86_64 --only-binary=:all: -t package dist/*.whl && \
-	cd package && zip -r ../lambda.zip . -x '*.pyc'
+	cd package && zip -r ../terraform/lambda.zip . -x '*.pyc'
 
 test:
 	@poetry run pytest
 
 init:
-	@cp lambda.zip terraform/lambda.zip && \
-	terraform -chdir=terraform init
+	@terraform -chdir=terraform init
 
 validate: init
 	@terraform -chdir=terraform validate
