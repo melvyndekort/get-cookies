@@ -11,38 +11,42 @@ clean:
 	terraform/.terraform.lock.hcl \
 	terraform/lambda.zip \
 	terraform/secrets.yaml \
-	src/.pytest_cache \
-	src/*/__pycache__ \
-	src/dist \
-	src/package
+	.pytest_cache \
+	*/__pycache__ \
+	dist \
+	package
 
 decrypt:
 	@aws kms decrypt \
-		--ciphertext-blob $$(cat terraform/secrets.yaml.encrypted) \
-		--output text \
-		--query Plaintext \
-		--encryption-context target=convert-jwt | base64 -d > terraform/secrets.yaml
+	--ciphertext-blob $$(cat terraform/secrets.yaml.encrypted) \
+	--output text \
+	--query Plaintext \
+	--encryption-context target=convert-jwt | base64 -d > terraform/secrets.yaml
 
 encrypt:
 	@aws kms encrypt \
-		--key-id alias/generic \
-		--plaintext fileb://terraform/secrets.yaml \
-		--encryption-context target=convert-jwt \
-		--output text \
-		--query CiphertextBlob > terraform/secrets.yaml.encrypted
+	--key-id alias/generic \
+	--plaintext fileb://terraform/secrets.yaml \
+	--encryption-context target=convert-jwt \
+	--output text \
+	--query CiphertextBlob > terraform/secrets.yaml.encrypted
 
 build:
-	@cd src; \
-	poetry install && \
+	@poetry install && \
 	poetry run pytest && \
 	poetry build && \
 	poetry run pip install --upgrade --platform manylinux2014_x86_64 --only-binary=:all: -t package dist/*.whl && \
-	cd package && \
-	zip -r ../lambda.zip . -x '*.pyc' && \
-	mv ../lambda.zip ../../terraform/lambda.zip
+	cd package && zip -r ../lambda.zip . -x '*.pyc'
 
 test:
-	@cd src; poetry run pytest
+	@poetry run pytest
 
-deploy: build
-	@cd terraform; terraform init; terraform apply
+init:
+	@cp lambda.zip terraform/lambda.zip && \
+	terraform -chdir=terraform init
+
+validate: init
+	@terraform -chdir=terraform validate
+
+deploy: validate
+	@terraform -chdir=terraform apply -input=true -refresh=true
