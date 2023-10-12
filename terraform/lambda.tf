@@ -60,5 +60,5 @@ resource "aws_lambda_permission" "get_cookies" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.get_cookies.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.api.http_method}${aws_api_gateway_resource.api.path}"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/${aws_api_gateway_method.api.http_method}${aws_api_gateway_resource.api.path}"
 }
