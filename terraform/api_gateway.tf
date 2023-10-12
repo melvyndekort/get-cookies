@@ -9,6 +9,8 @@ data "aws_iam_policy_document" "api" {
       identifiers = ["*"]
     }
 
+    actions = ["execute-api:Invoke"]
+
     resources = [aws_api_gateway_rest_api.api.execution_arn]
 
     condition {
@@ -52,9 +54,9 @@ resource "aws_api_gateway_deployment" "api" {
 
   triggers = {
     redeployment = sha1(jsonencode([
-      aws_api_gateway_resource.api.id,
-      aws_api_gateway_method.api.id,
-      aws_api_gateway_integration.api.id,
+      aws_api_gateway_resource.api,
+      aws_api_gateway_method.api,
+      aws_api_gateway_integration.api,
     ]))
   }
 

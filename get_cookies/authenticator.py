@@ -24,10 +24,12 @@ for jwks_uri in os.environ['JWKS_LIST'].split(","):
     logger.info(f'Found JWK for kid: {kid} in JWKS: {jwks_uri}')
     public_keys[kid] = jwt.algorithms.RSAAlgorithm.from_jwk(json.dumps(jwk))
 
+audience_list = os.environ['CLIENT_ID_LIST'].split(',')
+
 
 def get_expiration(token):
   public_key = get_public_key(token)
-  audience_list = os.environ['CLIENT_ID_LIST'].split(',')
+
   options = {
     "require": ["email"]
   }
