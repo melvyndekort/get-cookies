@@ -56,7 +56,6 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 resource "aws_lambda_permission" "get_cookies" {
-  statement_id  = "AllowAuthAPIInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.get_cookies.function_name
   principal     = "apigateway.amazonaws.com"
