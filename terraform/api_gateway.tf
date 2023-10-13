@@ -5,13 +5,13 @@ resource "aws_api_gateway_rest_api" "api" {
 data "aws_iam_policy_document" "api" {
   statement {
     principals {
-      type        = "AWS"
+      type        = "*"
       identifiers = ["*"]
     }
 
     actions = ["execute-api:Invoke"]
 
-    resources = [aws_api_gateway_rest_api.api.execution_arn]
+    resources = ["execute-api:/*"]
 
     condition {
       test     = "IpAddress"
