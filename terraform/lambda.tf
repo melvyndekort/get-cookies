@@ -22,7 +22,7 @@ resource "aws_lambda_function" "get_cookies" {
   s3_object_version = aws_s3_object.get_cookies.version_id
 
   layers = [
-    "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-arm64-ver-1-11-1:1",
+    "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-arm64-ver-1-20-0:2",
   ]
 
   runtime       = "python3.9"
