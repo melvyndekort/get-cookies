@@ -35,7 +35,7 @@ build:
 	@poetry install && \
 	poetry run pytest && \
 	poetry build && \
-	poetry run pip install --upgrade --platform manylinux2014_x86_64 --only-binary=:all: -t package dist/*.whl && \
+	poetry run pip install --upgrade --platform manylinux2014_aarch64 --only-binary=":all:" -t package dist/*.whl && \
 	cd package && zip -r ../terraform/lambda.zip . -x '*.pyc'
 
 test:
