@@ -26,7 +26,7 @@ resource "aws_lambda_function" "get_cookies" {
   ]
 
   runtime       = "python3.9"
-  architectures = ["x86_64"]
+  architectures = ["arm64"]
   memory_size   = 128
   timeout       = 8
 
