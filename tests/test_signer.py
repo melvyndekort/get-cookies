@@ -1,7 +1,5 @@
 import pytest
 
-from moto import mock_ssm
-
 def test_sign(prep_signer):
   from get_cookies import signer
 
