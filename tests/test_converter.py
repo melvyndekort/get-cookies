@@ -1,8 +1,7 @@
-import pytest
 import os
 
 def test_get_cookies_success(monkeypatch, prep_authenticator, prep_signer):
-  from get_cookies import converter, authenticator, signer
+  from get_cookies import converter, authenticator
 
   def get_expiration(token):
     return 123
