@@ -3,7 +3,6 @@ import pytest
 import boto3
 
 from pathlib import Path
-
 from moto import mock_ssm
 
 @pytest.fixture

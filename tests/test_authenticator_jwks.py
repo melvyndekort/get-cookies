@@ -1,10 +1,7 @@
 import pytest
 import os
-import requests
 import importlib
 import json
-
-from cryptography.hazmat.primitives.serialization import load_pem_public_key
 
 os.environ['JWKS_LIST'] = ''
 from get_cookies import authenticator

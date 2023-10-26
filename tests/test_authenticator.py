@@ -72,15 +72,15 @@ def test_get_expiration_success(monkeypatch, public_key_available, token_valid):
 
 def test_get_expiration_expired(public_key_available, token_expired):
   with pytest.raises(jwt.exceptions.ExpiredSignatureError):
-    exp = authenticator.get_expiration(token_expired)
+    authenticator.get_expiration(token_expired)
 
 def test_get_expiration_incorrect_audience(monkeypatch, public_key_available, token_valid):
   audience_list = ['fail', 'foobar']
   monkeypatch.setattr(authenticator, 'audience_list', audience_list)
 
   with pytest.raises(jwt.exceptions.InvalidAudienceError):
-    exp = authenticator.get_expiration(token_valid)
+    authenticator.get_expiration(token_valid)
 
 def test_get_expiration_missing_email_claim(public_key_available, token_missing_email):
   with pytest.raises(jwt.exceptions.MissingRequiredClaimError):
-    exp = authenticator.get_expiration(token_missing_email)
+    authenticator.get_expiration(token_missing_email)

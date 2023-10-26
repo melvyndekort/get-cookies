@@ -5,9 +5,6 @@ import requests
 import json
 import validators
 
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import serialization
-
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -49,5 +46,5 @@ def get_public_key(token):
     logger.info(f'Found matching public key with id: {kid}')
     return public_keys[kid]
   else:
-    logger.info(f'No matching public key found')
+    logger.info('No matching public key found')
     return None
