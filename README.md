@@ -1,6 +1,6 @@
 # GET-COOKIES
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/f32e1fa5c5da41acb94ae7c71723f7e1)](https://app.codacy.com/gh/melvyndekort/get-cookies/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)[![codecov](https://codecov.io/gh/melvyndekort/get-cookies/graph/badge.svg?token=LBLJ255JF3)](https://codecov.io/gh/melvyndekort/get-cookies)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/f32e1fa5c5da41acb94ae7c71723f7e1)](https://app.codacy.com/gh/melvyndekort/get-cookies/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)[![codecov](https://codecov.io/gh/melvyndekort/get-cookies/graph/badge.svg?token=LBLJ255JF3)](https://codecov.io/gh/melvyndekort/get-cookies)![pipeline](https://github.com/melvyndekort/get-cookies/actions/workflows/pipeline.yml/badge.svg)
 
 get-cookies is a serverless authentication solution which converts a JWT token to AWS Cloudfront signed cookies
 
