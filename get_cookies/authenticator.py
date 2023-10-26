@@ -14,7 +14,7 @@ for jwks_uri in os.environ['JWKS_LIST'].split(","):
         logger.error(f'Invalid JWKS URI: {jwks_uri}')
         continue
     else:
-        jwks = requests.get(jwks_uri).json()
+        jwks = requests.get(jwks_uri, timeout=5).json()
 
     for jwk in jwks['keys']:
         kid = jwk['kid']
