@@ -23,7 +23,7 @@ def aws_credentials():
 def prep_signer(aws_credentials):
     param_name = 'test'
     private_key = Path('tests/private.pem').read_text()
-    
+
     os.environ['CLOUDFRONT_PK_PATH'] = param_name
 
     with mock_ssm():
