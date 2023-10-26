@@ -7,8 +7,8 @@ from moto import mock_ssm
 
 @pytest.fixture
 def prep_authenticator(requests_mock):
-  os.environ['JWKS_LIST'] = 'http://localhost'
-  requests_mock.get('http://localhost', text='{}')
+    os.environ['JWKS_LIST'] = 'http://localhost'
+    requests_mock.get('http://localhost', text='{}')
 
 @pytest.fixture
 def aws_credentials():
@@ -21,16 +21,16 @@ def aws_credentials():
 
 @pytest.fixture
 def prep_signer(aws_credentials):
-  param_name = 'test'
-  private_key = Path('tests/private.pem').read_text()
-  
-  os.environ['CLOUDFRONT_PK_PATH'] = param_name
+    param_name = 'test'
+    private_key = Path('tests/private.pem').read_text()
+    
+    os.environ['CLOUDFRONT_PK_PATH'] = param_name
 
-  with mock_ssm():
-    ssm = boto3.client("ssm")
-    ssm.put_parameter(
-      Name=param_name,
-      Value=private_key,
-      Type="SecureString",
-    )
-    yield
+    with mock_ssm():
+        ssm = boto3.client("ssm")
+        ssm.put_parameter(
+            Name=param_name,
+            Value=private_key,
+            Type="SecureString",
+        )
+        yield

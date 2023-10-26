@@ -15,54 +15,54 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 param = client.get_parameter(
-  Name=os.environ['CLOUDFRONT_PK_PATH'],
-  WithDecryption=True
+    Name=os.environ['CLOUDFRONT_PK_PATH'],
+    WithDecryption=True
 )
 
 private_key = serialization.load_pem_private_key(
-  data=param['Parameter']['Value'].encode(),
-  password=None,
-  backend=default_backend()
+    data=param['Parameter']['Value'].encode(),
+    password=None,
+    backend=default_backend()
 )
 
 logger.info('Retrieved private key from parameter store')
 
 
 def aws_base64_encode(data):
-  return base64.b64encode(data).replace(b'+', b'-').replace(b'=', b'_').replace(b'/', b'~')
+    return base64.b64encode(data).replace(b'+', b'-').replace(b'=', b'_').replace(b'/', b'~')
 
 def rsa_signer(private_key, message):
-  return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
+    return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
 
 def make_policy(resource, expire_date):
-  policy = {
-    'Statement': [{
-      'Resource': resource,
-      'Condition': {
-        'DateLessThan': {
-          'AWS:EpochTime': expire_date
-        }
-      }
-    }]
-  }
-  return json.dumps(policy).replace(" ", "")
+    policy = {
+        'Statement': [{
+            'Resource': resource,
+            'Condition': {
+                'DateLessThan': {
+                    'AWS:EpochTime': expire_date
+                }
+            }
+        }]
+    }
+    return json.dumps(policy).replace(" ", "")
 
 def generate_signed_cookie(policy, expire_date):
-  policy = policy.encode('utf8')
-  policy_b64 = aws_base64_encode(policy)
+    policy = policy.encode('utf8')
+    policy_b64 = aws_base64_encode(policy)
 
-  signature = rsa_signer(private_key, policy)
-  signature_b64 = aws_base64_encode(signature)
+    signature = rsa_signer(private_key, policy)
+    signature_b64 = aws_base64_encode(signature)
 
-  return {
-    'Policy'    : policy_b64.decode("utf-8"),
-    'Signature' : signature_b64.decode("utf-8"),
-    'Key'       : os.environ['KEY_ID'],
-    'Expiration': expire_date
-  }
+    return {
+        'Policy'    : policy_b64.decode("utf-8"),
+        'Signature' : signature_b64.decode("utf-8"),
+        'Key'       : os.environ['KEY_ID'],
+        'Expiration': expire_date
+    }
 
 def generate_expiring_signed_cookie(resource, expire_date):
-  policy = make_policy(resource, expire_date)
-  signed_cookie = generate_signed_cookie(policy, expire_date)
-  logger.info('Successfully generated signed cookies')
-  return signed_cookie
+    policy = make_policy(resource, expire_date)
+    signed_cookie = generate_signed_cookie(policy, expire_date)
+    logger.info('Successfully generated signed cookies')
+    return signed_cookie
