@@ -23,17 +23,21 @@ jobs:
         with:
           python-version: 3.9
           cache: 'pip'
-      - name: Generate lambda artifact
-        run: |
-          pip install --upgrade pip
-          pip install poetry
-          poetry install
-          poetry run pytest
+      - name: Upgrade pip
+        run: pip install --upgrade pip
+      - name: Install poetry
+        run: pip install poetry
+      - name: Install dependencies
+        run: poetry install
+      - name: Run tests
+        run: poetry run pytest
+      - name: Build artifact
+      - run: |
           poetry build
           poetry run pip install --upgrade --platform manylinux2014_aarch64 --only-binary=":all:" -t package dist/*.whl
           cd package
           zip -qr ../lambda.zip . -x '*.pyc'
-      - name: Archive artifact
+      - name: Upload artifact
         if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
@@ -49,7 +53,7 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Download lambda archive
+      - name: Download artifact
         uses: actions/download-artifact@v3
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
