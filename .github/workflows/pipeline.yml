@@ -36,6 +36,7 @@ jobs:
         if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
+          name: lambda.zip
           path: lambda.zip
           if-no-files-found: error
 
@@ -48,12 +49,12 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     steps:
+      - name: Download lambda archive
+        uses: actions/download-artifact@v3
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-1
           role-to-assume: arn:aws:iam::075673041815:role/external/deployer
-      - name: Download lambda archive
-        uses: actions/download-artifact@v3
       - name: Deploy Lambda
         run: aws lambda update-function-code --function-name get-cookies --zip-file fileb://lambda.zip
