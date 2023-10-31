@@ -6,7 +6,7 @@ authors = ["Melvyn de Kort <melvyn@mdekort.nl>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-cryptography = "^41.0.4"
+cryptography = "^41.0.5"
 PyJWT = "^2.8.0"
 requests = "^2.31.0"
 validators = "^0.22.0"
