@@ -1,4 +1,4 @@
-.PHONY := clean decrypt encrypt build deploy
+.PHONY := clean decrypt encrypt install test build init validate deploy
 .DEFAULT_GOAL := build
 
 ifndef AWS_SESSION_TOKEN
@@ -11,6 +11,7 @@ clean:
 	terraform/.terraform.lock.hcl \
 	terraform/lambda.zip \
 	terraform/secrets.yaml \
+	lambda.zip \
 	.pytest_cache \
 	*/__pycache__ \
 	dist \
@@ -31,15 +32,16 @@ encrypt:
 	--output text \
 	--query CiphertextBlob > terraform/secrets.yaml.encrypted
 
-build:
-	@poetry install && \
-	poetry run pytest && \
-	poetry build && \
-	poetry run pip install --upgrade --platform manylinux2014_aarch64 --only-binary=":all:" -t package dist/*.whl && \
-	cd package && zip -r ../terraform/lambda.zip . -x '*.pyc'
+install:
+	@poetry install
 
-test:
+test: install
 	@poetry run pytest
+
+build: test
+	@poetry build
+	@poetry run pip install --upgrade --platform manylinux2014_aarch64 --only-binary=":all:" -t package dist/*.whl
+	@cd package && zip -r ../lambda.zip . -x '*.pyc'
 
 init:
 	@terraform -chdir=terraform init
