@@ -64,7 +64,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           env_vars: OS,PYTHON
           fail_ci_if_error: true
-          files: coverage/coverage.xml
+          files: coverage.xml
           flags: unittests
           verbose: true
 
@@ -87,4 +87,4 @@ jobs:
           aws-region: eu-west-1
           role-to-assume: arn:aws:iam::075673041815:role/external/deployer
       - name: Deploy Lambda
-        run: aws lambda update-function-code --function-name get-cookies --zip-file fileb://lambda/lambda.zip
+        run: aws lambda update-function-code --function-name get-cookies --zip-file fileb://lambda.zip
