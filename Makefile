@@ -47,5 +47,5 @@ init:
 validate: init
 	@terraform -chdir=terraform validate
 
-deploy: validate
+apply: validate
 	@terraform -chdir=terraform apply -input=true -refresh=true

@@ -5,6 +5,12 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/pipeline.yml'
+      - 'get_cookies/**'
+      - 'tests/**'
+      - 'poetry.lock'
+      - 'pyproject.toml'
   pull_request:
 
 jobs:
@@ -25,13 +31,13 @@ jobs:
           poetry build
           poetry run pip install --upgrade --platform manylinux2014_aarch64 --only-binary=":all:" -t package dist/*.whl
           cd package
-          zip -r ../terraform/lambda.zip . -x '*.pyc'
+          zip -r lambda.zip . -x '*.pyc'
       - name: Archive artifact
         if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
           name: lambda-archive
-          path: terraform/lambda.zip
+          path: lambda.zip
 
   deploy:
     permissions:
@@ -40,82 +46,16 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     needs: build
-    env:
-      TF_TOKEN_app_terraform_io: "${{ secrets.TF_API_TOKEN }}"
-    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
-    defaults:
-      run:
-        working-directory: terraform
+    if: github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-1
           role-to-assume: arn:aws:iam::075673041815:role/external/deployer
-
       - name: Download lambda archive
         uses: actions/download-artifact@v3
         with:
           name: lambda-archive
-          path: terraform/
-
-      - name: Terraform Format
-        id: fmt
-        run: terraform fmt -check
-
-      - name: Terraform Init
-        id: init
-        run: terraform init
-      
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate -no-color
-
-      - name: Terraform Plan
-        id: plan
-        if: github.event_name == 'pull_request'
-        run: terraform plan -no-color
-        continue-on-error: true
-
-      - uses: actions/github-script@v6
-        if: github.event_name == 'pull_request'
-        env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-
-            <details><summary>Show Plan</summary>
-
-            \`\`\`\n
-            ${process.env.PLAN}
-            \`\`\`
-
-            </details>
-
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
-
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
-
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve
+      - name: Deploy Lambda
+        run: aws lambda update-function-code --function-name get-cookies --zip-file fileb://lambda.zip
