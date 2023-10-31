@@ -21,7 +21,7 @@ updates:
       - "melvyndekort"
   # Maintain dependencies for Pip
   - package-ecosystem: "pip"
-    directory: "/src"
+    directory: "/"
     schedule:
       interval: "daily"
     assignees:
