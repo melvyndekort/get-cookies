@@ -4,12 +4,17 @@ resource "aws_cloudwatch_log_group" "get_cookies" {
   kms_key_id        = data.aws_kms_key.generic.arn
 }
 
-resource "aws_s3_object" "get_cookies" {
-  bucket      = data.terraform_remote_state.cloudsetup.outputs.s3_lambda
-  key         = "get_cookies/lambda.zip"
-  source      = "lambda.zip"
-  source_hash = filemd5("lambda.zip")
-  kms_key_id  = data.aws_kms_key.generic.arn
+data "archive_file" "empty_lambda" {
+  type        = "zip"
+  output_path = "lambda.zip"
+
+  source {
+    content = <<EOF
+def handle(event, context):
+  raise NotImplementedError
+EOF
+    filename = "get_cookies/handler.py"
+  }
 }
 
 resource "aws_lambda_function" "get_cookies" {
@@ -17,9 +22,8 @@ resource "aws_lambda_function" "get_cookies" {
   role          = aws_iam_role.get_cookies.arn
   handler       = "get_cookies.handler.handle"
 
-  s3_bucket         = aws_s3_object.get_cookies.bucket
-  s3_key            = aws_s3_object.get_cookies.id
-  s3_object_version = aws_s3_object.get_cookies.version_id
+  filename         = data.archive_file.empty_lambda.output_path
+  source_code_hash = data.archive_file.empty_lambda.output_base64sha256
 
   layers = [
     "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-arm64-ver-1-20-0:2",
@@ -50,6 +54,10 @@ resource "aws_lambda_function" "get_cookies" {
     aws_iam_role_policy.get_cookies,
     aws_cloudwatch_log_group.get_cookies,
   ]
+
+  lifecycle {
+    ignore_changes = [ source_code_hash ]
+  }
 }
 
 data "aws_region" "current" {}
