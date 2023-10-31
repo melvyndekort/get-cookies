@@ -30,19 +30,42 @@ jobs:
       - name: Install dependencies
         run: poetry install
       - name: Run tests
-        run: poetry run pytest
+        run: poetry run pytest --cov=./ --cov-report=xml
+      - name: Archive coverage artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: coverage.xml
       - name: Build artifact
         run: |
           poetry build
           poetry run pip install --upgrade --platform manylinux2014_aarch64 --only-binary=":all:" -t package dist/*.whl
           cd package
           zip -qr ../lambda.zip . -x '*.pyc'
-      - name: Upload artifact
+      - name: Archive lambda artifact
         if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
+          name: lambda
           path: lambda.zip
           if-no-files-found: error
+
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          files: coverage/coverage.xml
+          flags: unittests
+          verbose: true
 
   deploy:
     permissions:
@@ -55,10 +78,12 @@ jobs:
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v3
+        with:
+          name: lambda
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-1
           role-to-assume: arn:aws:iam::075673041815:role/external/deployer
       - name: Deploy Lambda
-        run: aws lambda update-function-code --function-name get-cookies --zip-file fileb://artifact/lambda.zip
+        run: aws lambda update-function-code --function-name get-cookies --zip-file fileb://lambda/lambda.zip
