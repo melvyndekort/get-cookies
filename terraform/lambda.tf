@@ -9,11 +9,11 @@ data "archive_file" "empty_lambda" {
   output_path = "lambda.zip"
 
   source {
-    content = <<EOF
+    filename = "get_cookies/handler.py"
+    content  = <<EOF
 def handle(event, context):
   raise NotImplementedError
 EOF
-    filename = "get_cookies/handler.py"
   }
 }
 
@@ -56,7 +56,7 @@ resource "aws_lambda_function" "get_cookies" {
   ]
 
   lifecycle {
-    ignore_changes = [ source_code_hash ]
+    ignore_changes = [source_code_hash]
   }
 }
 

@@ -31,7 +31,7 @@ jobs:
           poetry build
           poetry run pip install --upgrade --platform manylinux2014_aarch64 --only-binary=":all:" -t package dist/*.whl
           cd package
-          zip -r lambda.zip . -x '*.pyc'
+          zip -qr ../lambda.zip . -x '*.pyc'
       - name: Archive artifact
         if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
