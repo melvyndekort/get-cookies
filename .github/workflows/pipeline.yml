@@ -36,7 +36,6 @@ jobs:
         if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
-          name: lambda.zip
           path: lambda.zip
           if-no-files-found: error
 
@@ -57,4 +56,4 @@ jobs:
           aws-region: eu-west-1
           role-to-assume: arn:aws:iam::075673041815:role/external/deployer
       - name: Deploy Lambda
-        run: aws lambda update-function-code --function-name get-cookies --zip-file fileb://lambda.zip
+        run: aws lambda update-function-code --function-name get-cookies --zip-file fileb://artifact/lambda.zip
