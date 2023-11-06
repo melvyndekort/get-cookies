@@ -1,13 +1,13 @@
 [[package]]
 name = "boto3"
-version = "1.28.74"
+version = "1.28.78"
 description = "The AWS SDK for Python"
 category = "dev"
 optional = false
 python-versions = ">= 3.7"
 
 [package.dependencies]
-botocore = ">=1.31.74,<1.32.0"
+botocore = ">=1.31.78,<1.32.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.7.0,<0.8.0"
 
@@ -16,7 +16,7 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.31.74"
+version = "1.31.78"
 description = "Low-level, data-driven core of boto 3."
 category = "dev"
 optional = false
@@ -54,7 +54,7 @@ pycparser = "*"
 
 [[package]]
 name = "charset-normalizer"
-version = "3.3.1"
+version = "3.3.2"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
 category = "main"
 optional = false
@@ -337,20 +337,19 @@ test = ["fixtures", "purl", "pytest", "sphinx", "testtools", "requests-futures",
 
 [[package]]
 name = "responses"
-version = "0.23.3"
+version = "0.24.0"
 description = "A utility library for mocking out the `requests` Python library."
 category = "dev"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 
 [package.dependencies]
 pyyaml = "*"
 requests = ">=2.30.0,<3.0"
-types-PyYAML = "*"
 urllib3 = ">=1.25.10,<3.0"
 
 [package.extras]
-tests = ["pytest (>=7.0.0)", "coverage (>=6.0.0)", "pytest-cov", "pytest-asyncio", "pytest-httpserver", "flake8", "types-requests", "mypy", "tomli-w", "tomli"]
+tests = ["pytest (>=7.0.0)", "coverage (>=6.0.0)", "pytest-cov", "pytest-asyncio", "pytest-httpserver", "flake8", "types-pyyaml", "types-requests", "mypy", "tomli-w", "tomli"]
 
 [[package]]
 name = "s3transfer"
@@ -381,14 +380,6 @@ description = "A lil' TOML parser"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
-
-[[package]]
-name = "types-pyyaml"
-version = "6.0.12.12"
-description = "Typing stubs for PyYAML"
-category = "dev"
-optional = false
-python-versions = "*"
 
 [[package]]
 name = "urllib3"
@@ -479,7 +470,6 @@ responses = []
 s3transfer = []
 six = []
 tomli = []
-types-pyyaml = []
 urllib3 = []
 validators = []
 werkzeug = []
