@@ -6,6 +6,7 @@ from get_cookies import signer
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 def get_cookies(token, origin):
     expire_date = authenticator.get_expiration(token)
     logger.info(f'Token will expire at: {expire_date}')
