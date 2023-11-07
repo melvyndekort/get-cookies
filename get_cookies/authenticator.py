@@ -40,6 +40,7 @@ def get_expiration(token):
     logger.info(f'Successfully decoded token from user: {decoded["email"]}')
     return decoded['exp'] * 1000
 
+
 def get_public_key(token):
     kid = jwt.get_unverified_header(token)['kid']
     if kid in public_keys:

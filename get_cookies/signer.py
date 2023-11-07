@@ -31,8 +31,10 @@ logger.info('Retrieved private key from parameter store')
 def aws_base64_encode(data):
     return base64.b64encode(data).replace(b'+', b'-').replace(b'=', b'_').replace(b'/', b'~')
 
+
 def rsa_signer(private_key, message):
     return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
+
 
 def make_policy(resource, expire_date):
     policy = {
@@ -47,6 +49,7 @@ def make_policy(resource, expire_date):
     }
     return json.dumps(policy).replace(" ", "")
 
+
 def generate_signed_cookie(policy, expire_date):
     policy = policy.encode('utf8')
     policy_b64 = aws_base64_encode(policy)
@@ -55,11 +58,12 @@ def generate_signed_cookie(policy, expire_date):
     signature_b64 = aws_base64_encode(signature)
 
     return {
-        'Policy'    : policy_b64.decode("utf-8"),
-        'Signature' : signature_b64.decode("utf-8"),
-        'Key'       : os.environ['KEY_ID'],
+        'Policy': policy_b64.decode("utf-8"),
+        'Signature': signature_b64.decode("utf-8"),
+        'Key': os.environ['KEY_ID'],
         'Expiration': expire_date
     }
+
 
 def generate_expiring_signed_cookie(resource, expire_date):
     policy = make_policy(resource, expire_date)

@@ -6,6 +6,7 @@ from get_cookies import converter
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 def handle(event, context):
     try:
         token = event['queryStringParameters']['id_token']
