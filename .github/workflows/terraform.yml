@@ -9,6 +9,8 @@ on:
       - '.github/workflows/terraform.yml'
       - 'terraform/**'
   pull_request:
+    branches:
+      - main
 
 permissions:
   id-token: write
@@ -16,7 +18,7 @@ permissions:
 
 jobs:
   terraform:
-    name: "Terraform"
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     env:
       TF_TOKEN_app_terraform_io: "${{ secrets.TF_API_TOKEN }}"
