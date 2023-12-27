@@ -15,8 +15,8 @@ def get_cookies(token, origin):
     resource = origin + "/*"
     logger.info(f'Client came from: {resource}')
 
-    if expire_date < time.gmtime() + (60 * 60):
+    if expire_date < time.time() + (60 * 60):
         logger.info('Token is short-lived, setting expiration to a week')
-        expire_date = time.gmtime() + (60 * 60 * 24 * 7)
+        expire_date = int(time.time() + (60 * 60 * 24 * 7))
 
     return signer.generate_expiring_signed_cookie(resource=resource, expire_date=expire_date)
