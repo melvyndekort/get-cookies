@@ -8,13 +8,13 @@ resource "aws_cognito_user_pool_client" "get_cookies" {
   supported_identity_providers         = ["COGNITO"]
 
   token_validity_units {
-    access_token  = "hours"
-    id_token      = "hours"
+    access_token  = "minutes"
+    id_token      = "minutes"
     refresh_token = "hours"
   }
 
-  access_token_validity  = 24
-  id_token_validity      = 24
+  access_token_validity  = 5
+  id_token_validity      = 5
   refresh_token_validity = 24
 
   explicit_auth_flows = [
