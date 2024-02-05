@@ -3,7 +3,7 @@ import pytest
 import boto3
 
 from pathlib import Path
-from moto import mock_ssm
+from moto import mock_aws
 
 @pytest.fixture
 def prep_authenticator(requests_mock):
@@ -26,7 +26,7 @@ def prep_signer(aws_credentials):
 
     os.environ['CLOUDFRONT_PK_PATH'] = param_name
 
-    with mock_ssm():
+    with mock_aws():
         ssm = boto3.client("ssm")
         ssm.put_parameter(
             Name=param_name,
