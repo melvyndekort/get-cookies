@@ -9,7 +9,7 @@ python = "^3.9"
 cryptography = "^42"
 PyJWT = "^2.8"
 requests = "^2"
-validators = "^0.22"
+validators = "^0.23"
 urllib3 = "< 2"
 
 [tool.poetry.dev-dependencies]
