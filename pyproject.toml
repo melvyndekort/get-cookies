@@ -13,7 +13,7 @@ validators = "^0.28"
 urllib3 = "< 2"
 
 [tool.poetry.dev-dependencies]
-pytest = "^8.1"
+pytest = "^8.2"
 boto3 = "^1.34"
 moto = "^5.0"
 requests-mock = "^1.12"
