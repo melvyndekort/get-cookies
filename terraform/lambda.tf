@@ -29,7 +29,7 @@ resource "aws_lambda_function" "get_cookies" {
     "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-arm64-ver-1-21-0:1",
   ]
 
-  runtime       = "python3.11"
+  runtime       = "python3.9"
   architectures = ["arm64"]
   memory_size   = 128
   timeout       = 8
