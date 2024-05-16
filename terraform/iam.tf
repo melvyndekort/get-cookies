@@ -50,6 +50,16 @@ data "aws_iam_policy_document" "get_cookies" {
       aws_ssm_parameter.private_key.arn
     ]
   }
+
+  statement {
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      data.terraform_remote_state.cloudsetup.outputs.s3_otel_config_arn
+    ]
+  }
 }
 
 data "aws_iam_policy" "xray" {
