@@ -45,6 +45,7 @@ resource "aws_lambda_function" "get_cookies" {
       AWS_LAMBDA_EXEC_WRAPPER             = "/opt/otel-instrument"
       OPENTELEMETRY_COLLECTOR_CONFIG_FILE = data.terraform_remote_state.cloudsetup.outputs.s3_otel_config_uri
       OTEL_SERVICE_NAME                   = "get-cookies"
+      OTEL_PYTHON_LOG_CORRELATION         = "true"
     }
   }
 
