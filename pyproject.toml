@@ -17,7 +17,7 @@ pytest = "^8.3"
 boto3 = "^1.37"
 moto = "^5.1"
 requests-mock = "^1.12"
-pytest-cov = "^6.0"
+pytest-cov = "^6.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
