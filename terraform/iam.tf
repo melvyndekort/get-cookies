@@ -19,18 +19,6 @@ resource "aws_iam_role" "get_cookies" {
 data "aws_iam_policy_document" "get_cookies" {
   statement {
     actions = [
-      "logs:CreateLogStream",
-      "logs:PutLogEvents",
-    ]
-
-    resources = [
-      aws_cloudwatch_log_group.get_cookies.arn,
-      "${aws_cloudwatch_log_group.get_cookies.arn}:*",
-    ]
-  }
-
-  statement {
-    actions = [
       "kms:DescribeKey",
       "kms:GenerateDataKey",
       "kms:Decrypt",

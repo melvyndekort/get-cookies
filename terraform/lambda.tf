@@ -1,9 +1,3 @@
-resource "aws_cloudwatch_log_group" "get_cookies" {
-  name              = "/aws/lambda/get-cookies"
-  retention_in_days = 7
-  kms_key_id        = data.aws_kms_key.generic.arn
-}
-
 data "archive_file" "empty_lambda" {
   type        = "zip"
   output_path = "lambda.zip"
@@ -25,11 +19,7 @@ resource "aws_lambda_function" "get_cookies" {
   filename         = data.archive_file.empty_lambda.output_path
   source_code_hash = data.archive_file.empty_lambda.output_base64sha256
 
-  layers = [
-    "arn:aws:lambda:eu-west-1:901920570463:layer:aws-otel-python-arm64-ver-1-21-0:1",
-  ]
-
-  runtime       = "python3.9"
+  runtime       = "python3.13"
   architectures = ["arm64"]
   memory_size   = 128
   timeout       = 8
@@ -38,20 +28,15 @@ resource "aws_lambda_function" "get_cookies" {
 
   environment {
     variables = {
-      CLIENT_ID_LIST                      = aws_cognito_user_pool_client.get_cookies.id
-      KEY_ID                              = aws_cloudfront_public_key.public_key.id
-      JWKS_LIST                           = "https://${data.terraform_remote_state.cloudsetup.outputs.auth_user_pool_endpoint}/.well-known/jwks.json"
-      CLOUDFRONT_PK_PATH                  = aws_ssm_parameter.private_key.name
-      AWS_LAMBDA_EXEC_WRAPPER             = "/opt/otel-instrument"
-      OPENTELEMETRY_COLLECTOR_CONFIG_FILE = data.terraform_remote_state.cloudsetup.outputs.s3_otel_config_uri
-      OTEL_SERVICE_NAME                   = "get-cookies"
-      OTEL_PYTHON_LOG_CORRELATION         = "true"
+      CLIENT_ID_LIST     = aws_cognito_user_pool_client.get_cookies.id
+      KEY_ID             = aws_cloudfront_public_key.public_key.id
+      JWKS_LIST          = "https://${data.terraform_remote_state.cloudsetup.outputs.auth_user_pool_endpoint}/.well-known/jwks.json"
+      CLOUDFRONT_PK_PATH = aws_ssm_parameter.private_key.name
     }
   }
 
   depends_on = [
     aws_iam_role_policy.get_cookies,
-    aws_cloudwatch_log_group.get_cookies,
   ]
 
   lifecycle {
