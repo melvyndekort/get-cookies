@@ -14,7 +14,7 @@ urllib3 = "^1.26"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4"
-boto3 = "^1.39.4"
+boto3 = "^1.39.6"
 botocore = "^1.39.3"
 moto = "^5.1"
 requests-mock = "^1.12"
