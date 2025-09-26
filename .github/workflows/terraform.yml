@@ -30,7 +30,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-region: eu-west-1
-          role-to-assume: arn:aws:iam::075673041815:role/external/deployer
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
