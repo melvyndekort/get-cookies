@@ -39,15 +39,7 @@ data "aws_iam_policy_document" "get_cookies" {
     ]
   }
 
-  statement {
-    actions = [
-      "s3:GetObject",
-    ]
 
-    resources = [
-      data.terraform_remote_state.cloudsetup.outputs.s3_otel_config_arn
-    ]
-  }
 }
 
 resource "aws_iam_role_policy" "get_cookies" {
