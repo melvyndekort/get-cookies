@@ -38,6 +38,7 @@ resource "aws_lambda_function" "get_cookies" {
 
   depends_on = [
     aws_iam_role_policy.get_cookies,
+    aws_cloudwatch_log_group.get_cookies,
   ]
 
   lifecycle {

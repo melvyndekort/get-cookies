@@ -39,7 +39,17 @@ data "aws_iam_policy_document" "get_cookies" {
     ]
   }
 
+  statement {
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
 
+    resources = [
+      aws_cloudwatch_log_group.get_cookies.arn,
+      "${aws_cloudwatch_log_group.get_cookies.arn}:*"
+    ]
+  }
 }
 
 resource "aws_iam_role_policy" "get_cookies" {
