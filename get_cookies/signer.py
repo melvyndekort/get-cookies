@@ -32,7 +32,7 @@ def aws_base64_encode(data):
 
 
 def rsa_signer(private_key, message):
-    return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
+    return private_key.sign(message, padding.PKCS1v15(), hashes.SHA256())
 
 
 def make_policy(resource, expire_date):

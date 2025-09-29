@@ -1,6 +1,7 @@
 import pytest
 import json
-
+import os
+import sys
 from pathlib import Path
 
 
@@ -10,6 +11,13 @@ def api_gw_event():
     return json.loads(event)
 
 def test_success(monkeypatch, api_gw_event):
+    # Set allowed origins for test before importing
+    monkeypatch.setenv('ALLOWED_ORIGINS', 'http://localhost')
+    
+    # Clear module cache to force reload with new env var
+    if 'get_cookies.handler' in sys.modules:
+        del sys.modules['get_cookies.handler']
+    
     from get_cookies import handler
 
     def get_cookies(token, origin):
@@ -22,6 +30,13 @@ def test_success(monkeypatch, api_gw_event):
     assert resp['headers']['Access-Control-Allow-Origin'] == 'http://localhost'
 
 def test_fail(monkeypatch, api_gw_event):
+    # Set allowed origins for test before importing
+    monkeypatch.setenv('ALLOWED_ORIGINS', 'http://localhost')
+    
+    # Clear module cache to force reload with new env var
+    if 'get_cookies.handler' in sys.modules:
+        del sys.modules['get_cookies.handler']
+    
     from get_cookies import handler
 
     def get_cookies(token, origin):
@@ -34,6 +49,13 @@ def test_fail(monkeypatch, api_gw_event):
 
 def test_cors_headers_consistency(monkeypatch, api_gw_event):
     """Test that CORS headers are consistent between success and error responses."""
+    # Set allowed origins for test before importing
+    monkeypatch.setenv('ALLOWED_ORIGINS', 'http://localhost')
+    
+    # Clear module cache to force reload with new env var
+    if 'get_cookies.handler' in sys.modules:
+        del sys.modules['get_cookies.handler']
+    
     from get_cookies import handler
 
     def get_cookies_success(token, origin):
@@ -53,3 +75,25 @@ def test_cors_headers_consistency(monkeypatch, api_gw_event):
     # CORS headers should be identical
     assert success_resp['headers']['Access-Control-Allow-Origin'] == error_resp['headers']['Access-Control-Allow-Origin']
     assert success_resp['headers']['Access-Control-Allow-Methods'] == error_resp['headers']['Access-Control-Allow-Methods']
+
+def test_invalid_origin_blocked(monkeypatch):
+    """Test that invalid origins are blocked for security."""
+    # Set allowed origins for test (not including evil.com)
+    monkeypatch.setenv('ALLOWED_ORIGINS', 'http://localhost')
+    
+    # Clear module cache to force reload with new env var
+    if 'get_cookies.handler' in sys.modules:
+        del sys.modules['get_cookies.handler']
+    
+    from get_cookies import handler
+    
+    # Test with malicious origin
+    event = {
+        'headers': {'origin': 'https://evil.com'},
+        'queryStringParameters': {'id_token': 'test'}
+    }
+    
+    resp = handler.handle(event, None)
+    assert resp['statusCode'] == 403
+    assert resp['body'] == 'Forbidden'
+    assert resp['headers']['Access-Control-Allow-Origin'] == 'null'
