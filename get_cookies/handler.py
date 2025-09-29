@@ -7,20 +7,29 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
+def _get_cors_headers(origin):
+    return {
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Origin': origin,
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+    }
+
+
 def handle(event, context):
+    origin = event.get('headers', {}).get('origin', '*')
+    
     try:
-        token = event['queryStringParameters']['id_token']
-        origin = event['headers']['origin']
+        params = event.get('queryStringParameters') or {}
+        token = params.get('id_token')
+        
+        if not token:
+            raise ValueError("Missing id_token parameter")
 
         cookies = converter.get_cookies(token, origin)
 
         return {
             'statusCode': 200,
-            'headers': {
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Access-Control-Allow-Origin': origin,
-                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
-            },
+            'headers': _get_cors_headers(origin),
             'body': json.dumps(cookies)
         }
 
@@ -29,10 +38,6 @@ def handle(event, context):
 
         return {
             'statusCode': 401,
-            'headers': {
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Access-Control-Allow-Origin': origin,
-                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
-            },
+            'headers': _get_cors_headers(origin),
             'body': 'Unauthorized'
         }
