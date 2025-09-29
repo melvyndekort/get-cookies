@@ -31,3 +31,25 @@ def test_fail(monkeypatch, api_gw_event):
     resp = handler.handle(api_gw_event, None)
     assert resp['statusCode'] == 401
     assert resp['body'] == 'Unauthorized'
+
+def test_cors_headers_consistency(monkeypatch, api_gw_event):
+    """Test that CORS headers are consistent between success and error responses."""
+    from get_cookies import handler
+
+    def get_cookies_success(token, origin):
+        return {'test': 'data'}
+    
+    def get_cookies_error(token, origin):
+        raise ValueError('Test error')
+    
+    # Test success response
+    monkeypatch.setattr(handler.converter, 'get_cookies', get_cookies_success)
+    success_resp = handler.handle(api_gw_event, None)
+    
+    # Test error response  
+    monkeypatch.setattr(handler.converter, 'get_cookies', get_cookies_error)
+    error_resp = handler.handle(api_gw_event, None)
+    
+    # CORS headers should be identical
+    assert success_resp['headers']['Access-Control-Allow-Origin'] == error_resp['headers']['Access-Control-Allow-Origin']
+    assert success_resp['headers']['Access-Control-Allow-Methods'] == error_resp['headers']['Access-Control-Allow-Methods']
