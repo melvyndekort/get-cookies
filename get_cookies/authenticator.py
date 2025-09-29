@@ -1,8 +1,9 @@
-import os
+import json
 import logging
+import os
+
 import jwt
 import requests
-import json
 import validators
 
 logger = logging.getLogger()
@@ -25,6 +26,15 @@ audience_list = os.environ['CLIENT_ID_LIST'].split(',')
 
 
 def get_expiration(token):
+    """
+    Extract and validate JWT token expiration.
+    
+    Args:
+        token: JWT token string
+        
+    Returns:
+        int: Token expiration time in milliseconds
+    """
     public_key = get_public_key(token)
 
     options = {
@@ -42,6 +52,15 @@ def get_expiration(token):
 
 
 def get_public_key(token):
+    """
+    Retrieve public key for JWT token verification.
+    
+    Args:
+        token: JWT token string
+        
+    Returns:
+        RSAPublicKey or None: Public key for token verification
+    """
     kid = jwt.get_unverified_header(token)['kid']
     if kid in public_keys:
         logger.info(f'Found matching public key with id: {kid}')

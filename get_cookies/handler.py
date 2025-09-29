@@ -8,6 +8,7 @@ logger.setLevel(logging.INFO)
 
 
 def _get_cors_headers(origin):
+    """Generate CORS headers for API Gateway response."""
     return {
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Allow-Origin': origin,
@@ -16,6 +17,16 @@ def _get_cors_headers(origin):
 
 
 def handle(event, context):
+    """
+    AWS Lambda handler for converting JWT tokens to CloudFront signed cookies.
+    
+    Args:
+        event: API Gateway event containing query parameters and headers
+        context: Lambda context object
+        
+    Returns:
+        dict: API Gateway response with signed cookies or error
+    """
     origin = event.get('headers', {}).get('origin', '*')
     
     try:
@@ -33,9 +44,15 @@ def handle(event, context):
             'body': json.dumps(cookies)
         }
 
+    except (KeyError, ValueError, TypeError) as e:
+        logger.error(f'Client error: {e}')
+        return {
+            'statusCode': 400,
+            'headers': _get_cors_headers(origin),
+            'body': 'Bad Request'
+        }
     except Exception as e:
-        logger.exception(f'Exception occurred: {e}')
-
+        logger.exception(f'Server error: {e}')
         return {
             'statusCode': 401,
             'headers': _get_cors_headers(origin),
