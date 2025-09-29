@@ -19,7 +19,7 @@ resource "aws_lambda_function" "get_cookies" {
   filename         = data.archive_file.empty_lambda.output_path
   source_code_hash = data.archive_file.empty_lambda.output_base64sha256
 
-  runtime       = "python3.13"
+  runtime       = "python3.12"
   architectures = ["arm64"]
   memory_size   = 128
   timeout       = 8
