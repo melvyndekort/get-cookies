@@ -15,6 +15,11 @@ updates:
     schedule:
       interval: "daily"
     rebase-strategy: "auto"
+    groups:
+      aws-sdk:
+        patterns:
+          - "boto3*"
+          - "botocore*"
     assignees:
       - "melvyndekort"
     reviewers:
