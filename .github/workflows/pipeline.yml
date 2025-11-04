@@ -19,6 +19,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - name: Setup Python
@@ -45,7 +48,7 @@ jobs:
         with:
           fail_ci_if_error: true
           files: coverage.xml
-          token: ${{ secrets.CODECOV_TOKEN }}
+          use_oidc: true
           verbose: true
       - name: Build artifact
         run: |
