@@ -1,24 +1,29 @@
-[tool.poetry]
+[project]
 name = "get_cookies"
 version = "0.1.0"
 description = ""
-authors = ["Melvyn de Kort <melvyn@mdekort.nl>"]
+authors = [{name = "Melvyn de Kort", email = "melvyn@mdekort.nl"}]
+requires-python = ">=3.12"
+dependencies = [
+    "cryptography>=46",
+    "PyJWT>=2.10",
+    "requests>=2",
+    "validators>=0.35",
+    "urllib3>=2",
+]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-cryptography = "^46"
-PyJWT = "^2.10"
-requests = "^2"
-validators = "^0.35"
-urllib3 = "^2"
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4",
+    "boto3>=1.40.66",
+    "botocore>=1.40.47",
+    "moto>=5.1",
+    "requests-mock>=1.12",
+    "pytest-cov>=7.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.4"
-boto3 = "^1.40.66"
-botocore = "^1.40.47"
-moto = "^5.1"
-requests-mock = "^1.12"
-pytest-cov = "^7.0"
+[tool.hatch.build.targets.wheel]
+packages = ["get_cookies"]
 
 [tool.pytest.ini_options]
 # https://github.com/boto/boto3/issues/3889
@@ -27,5 +32,5 @@ filterwarnings = [
 ]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

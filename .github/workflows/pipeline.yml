@@ -10,7 +10,7 @@ on:
       - 'get_cookies/**'
       - 'tests/**'
       - 'pyproject.toml'
-      - 'poetry.lock'
+      - 'uv.lock'
       - 'codecov.yml'
   pull_request:
     branches:
@@ -24,25 +24,16 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v5
-      - name: Setup Python
-        uses: actions/setup-python@v6
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
-          python-version: 3.12
-      - name: Install Poetry
-        run: |
-          pip install --upgrade pip
-          pip install poetry
-      - name: Cache Poetry dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pypoetry
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
-      - name: Verify poetry.lock
-        run: poetry check --lock
+          version: "latest"
+      - name: Set up Python
+        run: uv python install
       - name: Install dependencies
-        run: poetry install
+        run: uv sync --all-extras
       - name: Run tests
-        run: poetry run pytest --cov=./ --cov-report=xml
+        run: uv run pytest --cov=./ --cov-report=xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
@@ -52,8 +43,8 @@ jobs:
           verbose: true
       - name: Build artifact
         run: |
-          poetry build
-          poetry run pip install --upgrade --platform manylinux2014_aarch64 --only-binary=":all:" -t package dist/*.whl
+          uv build
+          uv run pip install --upgrade --platform manylinux2014_aarch64 --only-binary=":all:" -t package dist/*.whl
           cd package
           zip -qr ../lambda.zip . -x '*.pyc'
       - name: Archive lambda artifact

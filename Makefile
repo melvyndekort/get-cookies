@@ -33,14 +33,14 @@ encrypt:
 	--query CiphertextBlob > terraform/secrets.yaml.encrypted
 
 install:
-	@poetry install
+	@uv sync --all-extras
 
 test: install
-	@poetry run pytest
+	@uv run pytest
 
 build: test
-	@poetry build
-	@poetry run pip install --upgrade --platform manylinux2014_aarch64 --only-binary=":all:" -t package dist/*.whl
+	@uv build
+	@uv run pip install --upgrade --platform manylinux2014_aarch64 --only-binary=":all:" -t package dist/*.whl
 	@cd package && zip -r ../lambda.zip . -x '*.pyc'
 
 init:
