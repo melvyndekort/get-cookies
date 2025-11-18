@@ -35,7 +35,7 @@ This Lambda function provides a secure bridge between JWT-based authentication s
 - AWS CLI configured
 - Terraform >= 1.0
 - Python 3.12
-- Poetry (for development)
+- uv (for development)
 
 ## Environment Variables
 
@@ -80,26 +80,26 @@ make deploy
 
 ```bash
 # Install dependencies
-poetry install
+uv sync --all-extras
 
 # Run tests
-poetry run pytest
+uv run pytest
 
 # Run tests with coverage
-poetry run pytest --cov=get_cookies
+uv run pytest --cov=get_cookies
 ```
 
 ### Code Quality
 
 ```bash
 # Format code
-poetry run black get_cookies/
+uv run black get_cookies/
 
 # Lint code
-poetry run flake8 get_cookies/
+uv run flake8 get_cookies/
 
 # Type checking
-poetry run mypy get_cookies/
+uv run mypy get_cookies/
 ```
 
 ## API Usage
