@@ -123,5 +123,5 @@ resource "aws_api_gateway_stage" "prod" {
 resource "aws_api_gateway_base_path_mapping" "api" {
   api_id      = aws_api_gateway_rest_api.api.id
   stage_name  = aws_api_gateway_stage.prod.stage_name
-  domain_name = data.terraform_remote_state.cloudsetup.outputs.api_mdekort_domain_name
+  domain_name = data.terraform_remote_state.tf_aws.outputs.api_mdekort_domain_name
 }
