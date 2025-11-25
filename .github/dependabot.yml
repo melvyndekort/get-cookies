@@ -2,6 +2,15 @@ version: 2
 
 updates:
   - package-ecosystem: "github-actions"
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    rebase-strategy: "auto"
+    assignees:
+      - "melvyndekort"
+    reviewers:
+      - "melvyndekort"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -10,7 +19,6 @@ updates:
       - "melvyndekort"
     reviewers:
       - "melvyndekort"
-  - package-ecosystem: "pip"
     directory: "/"
     schedule:
       interval: "daily"
