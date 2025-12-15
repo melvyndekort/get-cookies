@@ -48,7 +48,7 @@ jobs:
           cd package
           zip -qr ../lambda.zip . -x '*.pyc'
       - name: Archive lambda artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: lambda
           path: lambda.zip
