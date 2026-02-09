@@ -68,7 +68,7 @@ jobs:
         with:
           name: lambda
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: eu-west-1
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
