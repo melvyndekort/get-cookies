@@ -26,6 +26,8 @@ resource "aws_cognito_user_pool_client" "get_cookies" {
     "https://example.melvyn.dev/callback.html",
     "https://example.melvyn.dev",
     "https://start.mdekort.nl/callback.html",
-    "https://start.mdekort.nl"
+    "https://start.mdekort.nl",
+    "https://network-monitor.mdekort.nl/callback.html",
+    "https://network-monitor.mdekort.nl"
   ]
 }
