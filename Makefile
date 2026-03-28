@@ -51,3 +51,6 @@ validate: init
 
 apply: validate
 	@terraform -chdir=terraform apply -input=true -refresh=true
+
+lint: install
+	@uv run pylint get_cookies
