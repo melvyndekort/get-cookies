@@ -54,3 +54,18 @@ apply: validate
 
 lint: install
 	@uv run pylint get_cookies
+
+format: install
+	@uv run ruff format .
+	@uv run ruff check --fix .
+
+update-deps:
+	@uv sync --upgrade --all-extras
+
+package: build
+
+deploy: package
+	@aws lambda update-function-code --function-name get-cookies --zip-file fileb://lambda.zip
+
+plan: init
+	@terraform -chdir=terraform plan
