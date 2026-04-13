@@ -6,7 +6,7 @@ authors = [{name = "Melvyn de Kort", email = "melvyn@mdekort.nl"}]
 requires-python = ">=3.12"
 dependencies = [
     "cryptography>=46",
-    "PyJWT>=2.10",
+    "PyJWT>=2.12.1",
     "requests>=2",
     "validators>=0.35",
     "urllib3>=2.6.3",
