@@ -44,6 +44,12 @@ jobs:
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Approve grouped dependency updates
+        if: ${{steps.dependabot-metadata.outputs.dependency-group != '' && steps.dependabot-metadata.outputs.dependency-type != 'direct:production'}}
+        run: gh pr review $PR_URL --approve -b "I'm **approving** this pull request because **it includes a grouped dependency update**"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Comment on major updates of non-development dependencies
         if: ${{steps.dependabot-metadata.outputs.update-type == 'version-update:semver-major' && steps.dependabot-metadata.outputs.dependency-type == 'direct:production' && steps.dependabot-metadata.outputs.package-ecosystem != 'github_actions'}}
         run: |
