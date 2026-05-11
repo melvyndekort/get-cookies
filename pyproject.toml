@@ -9,7 +9,7 @@ dependencies = [
     "PyJWT>=2.12.1",
     "requests>=2",
     "validators>=0.35",
-    "urllib3>=2.6.3",
+    "urllib3>=2.7.0",
 ]
 
 [project.optional-dependencies]
