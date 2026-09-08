@@ -25,6 +25,8 @@ Terraform creates the Lambda with dummy code and `ignore_changes` on `source_cod
 
 - Backend: S3 key in `mdekort-tfstate-075673041815`
 - Secrets: KMS context `target=convert-jwt`
+- **Still in the management account.** Priority 3 subaccount migration
+  candidate — see `~/.claude/references/subaccount-migration.md`.
 
 ## Related Repositories
 
