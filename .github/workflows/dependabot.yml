@@ -1,5 +1,7 @@
 name: Dependabot auto-approve
-on: pull_request
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
 
 permissions:
   contents: write
@@ -8,7 +10,7 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
+    if: github.actor == 'dependabot[bot]' && github.event.action != 'closed'
     steps:
       - name: Dependabot metadata
         id: dependabot-metadata
@@ -58,3 +60,19 @@ jobs:
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+  trigger-deploy:
+    runs-on: ubuntu-latest
+    # Merges performed via the default GITHUB_TOKEN (which is how auto-merge
+    # above works) don't fire a new push event - GitHub suppresses that to
+    # prevent infinite automation loops. workflow_dispatch is exempted from
+    # that restriction, so we use it to explicitly kick off the real deploy
+    # once a Terraform PR actually merges (not just closed-without-merging).
+    if: github.event.action == 'closed' && github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'terraform')
+    permissions:
+      actions: write
+    steps:
+      - name: Trigger Terraform
+        run: gh workflow run "Terraform" --repo ${{ github.repository }} --ref main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
