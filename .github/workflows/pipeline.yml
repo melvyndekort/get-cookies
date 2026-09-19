@@ -34,6 +34,8 @@ jobs:
         run: uv sync --all-extras
       - name: Run tests
         run: uv run pytest --cov=./ --cov-report=xml
+      - name: Run pylint
+        run: uv run pylint get_cookies
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v7
         with:

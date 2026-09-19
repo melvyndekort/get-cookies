@@ -20,6 +20,7 @@ dev = [
     "moto>=5.1.22",
     "requests-mock>=1.12.1",
     "pytest-cov>=7.0",
+    "pylint>=3.3",
 ]
 
 [tool.hatch.build.targets.wheel]

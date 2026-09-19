@@ -1,3 +1,5 @@
+"""Builds and signs CloudFront cookie policies using a private key from SSM."""
+
 import base64
 import json
 import logging
@@ -28,14 +30,17 @@ logger.info('Retrieved private key from parameter store')
 
 
 def aws_base64_encode(data):
+    """Base64-encode data using CloudFront's URL-safe alphabet."""
     return base64.b64encode(data).replace(b'+', b'-').replace(b'=', b'_').replace(b'/', b'~')
 
 
-def rsa_signer(private_key, message):
-    return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
+def rsa_signer(signing_key, message):
+    """Sign message with signing_key using the scheme CloudFront expects."""
+    return signing_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
 
 
 def make_policy(resource, expire_date):
+    """Build a CloudFront custom policy JSON string for resource, expiring at expire_date."""
     policy = {
         'Statement': [{
             'Resource': resource,
@@ -50,6 +55,7 @@ def make_policy(resource, expire_date):
 
 
 def generate_signed_cookie(policy, expire_date):
+    """Sign policy and return the CloudFront Policy/Signature/Key/Expiration cookie fields."""
     policy = policy.encode('utf8')
     policy_b64 = aws_base64_encode(policy)
 
@@ -65,6 +71,7 @@ def generate_signed_cookie(policy, expire_date):
 
 
 def generate_expiring_signed_cookie(resource, expire_date):
+    """Build a policy for resource and return its signed cookie fields."""
     policy = make_policy(resource, expire_date)
     signed_cookie = generate_signed_cookie(policy, expire_date)
     logger.info('Successfully generated signed cookies')
