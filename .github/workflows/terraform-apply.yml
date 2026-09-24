@@ -1,0 +1,29 @@
+# The workflow NAME is load-bearing: the trigger-deploy job in dependabot.yml
+# dispatches it by name after an auto-merged Terraform PR, because a
+# GITHUB_TOKEN merge fires no push event. Keep the two in sync.
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform-*.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: terraform-apply
+  cancel-in-progress: false
+
+# Permissions do NOT inherit into a reusable workflow: a called workflow can
+# only narrow what the caller granted, never widen it. Without this block the
+# run is refused before any job starts, with `startup_failure` and no log.
+jobs:
+  apply:
+    permissions:
+      id-token: write
+      contents: read
+    uses: melvyndekort/gha-workflows/.github/workflows/terraform-apply.yml@v1
+    secrets:
+      role-arn: ${{ secrets.AWS_ROLE_ARN }}
