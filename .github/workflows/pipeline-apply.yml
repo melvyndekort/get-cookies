@@ -1,4 +1,4 @@
-name: "Pipeline"
+name: "Pipeline Apply"
 
 on:
   workflow_dispatch:
@@ -6,21 +6,17 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/pipeline.yml'
+      - '.github/workflows/pipeline-apply.yml'
       - 'get_cookies/**'
       - 'tests/**'
       - 'pyproject.toml'
       - 'uv.lock'
       - 'codecov.yml'
-  pull_request:
-    branches:
-      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
       contents: read
     steps:
       - uses: actions/checkout@v7
@@ -32,17 +28,6 @@ jobs:
         run: uv python install
       - name: Install dependencies
         run: uv sync --all-extras
-      - name: Run tests
-        run: uv run pytest --cov=./ --cov-report=xml
-      - name: Run pylint
-        run: uv run pylint get_cookies
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v7
-        with:
-          fail_ci_if_error: true
-          files: coverage.xml
-          use_oidc: true
-          verbose: true
       - name: Build artifact
         run: |
           uv build
@@ -57,13 +42,12 @@ jobs:
           if-no-files-found: error
 
   deploy:
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
     permissions:
       id-token: write
       contents: read
-      pull-requests: write
-    runs-on: ubuntu-latest
-    needs: build
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v8
