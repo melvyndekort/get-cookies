@@ -55,7 +55,7 @@ Edit `terraform/terraform.tfvars`:
 
 ```hcl
 # Only include origins that actually call the API
-allowed_origins = "https://start.mdekort.nl,https://example.melvyn.dev"
+allowed_origins = "https://example.melvyn.dev,https://network-monitor.mdekort.nl"
 ```
 
 ### 2. Deploy Infrastructure
@@ -109,7 +109,7 @@ uv run mypy get_cookies/
 ```http
 GET /cookies?id_token=<JWT_TOKEN>
 Host: api.mdekort.nl
-Origin: https://start.mdekort.nl
+Origin: https://example.melvyn.dev
 ```
 
 **Note:** The API supports CORS preflight requests (OPTIONS method) for cross-origin access.
