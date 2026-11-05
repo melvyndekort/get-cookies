@@ -4,7 +4,7 @@ locals {
   # client_id and the JWKS URL are public (no secret), so they're inlined
   # rather than sourced from a secrets store.
   authentik_client_id = "gR3DorO9O4wDWC5HPNzENVrPVPzfjcHaJVqfhZM9"
-  authentik_jwks_url  = "https://authentik.mdekort.nl/application/o/get-cookies/jwks/"
+  authentik_jwks_url  = "https://auth.mdekort.nl/application/o/get-cookies/jwks/"
 }
 
 data "archive_file" "empty_lambda" {
