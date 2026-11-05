@@ -1,3 +1,12 @@
+locals {
+  # Authentik OAuth2 provider/application "get-cookies" (authentik.mdekort.nl),
+  # replacing the Cognito user pool client previously used here. Both the
+  # client_id and the JWKS URL are public (no secret), so they're inlined
+  # rather than sourced from a secrets store.
+  authentik_client_id = "gR3DorO9O4wDWC5HPNzENVrPVPzfjcHaJVqfhZM9"
+  authentik_jwks_url  = "https://authentik.mdekort.nl/application/o/get-cookies/jwks/"
+}
+
 data "archive_file" "empty_lambda" {
   type        = "zip"
   output_path = "lambda.zip"
@@ -28,9 +37,9 @@ resource "aws_lambda_function" "get_cookies" {
 
   environment {
     variables = {
-      CLIENT_ID_LIST     = aws_cognito_user_pool_client.get_cookies.id
+      CLIENT_ID_LIST     = local.authentik_client_id
       KEY_ID             = aws_cloudfront_public_key.public_key.id
-      JWKS_LIST          = "https://${data.terraform_remote_state.tf_cognito.outputs.auth_user_pool_endpoint}/.well-known/jwks.json"
+      JWKS_LIST          = local.authentik_jwks_url
       CLOUDFRONT_PK_PATH = aws_ssm_parameter.private_key.name
       ALLOWED_ORIGINS    = var.allowed_origins
     }

@@ -30,5 +30,5 @@ Terraform creates the Lambda with dummy code and `ignore_changes` on `source_cod
 
 ## Related Repositories
 
-- `~/src/melvyndekort/tf-cognito` — Cognito user pool this Lambda validates against
+- Authentik OAuth2 provider/application "get-cookies" (authentik.mdekort.nl) — replaced the `tf-cognito` user pool client this Lambda used to validate against
 - `~/src/melvyndekort/tf-cloudflare` — DNS for the API endpoint
