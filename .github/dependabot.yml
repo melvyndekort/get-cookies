@@ -6,6 +6,10 @@ updates:
     schedule:
       interval: "weekly"
     rebase-strategy: "auto"
+    groups:
+      github-actions-root:
+        patterns:
+          - "*"
     assignees:
       - "melvyndekort"
     reviewers:
@@ -21,6 +25,9 @@ updates:
         patterns:
           - "boto3*"
           - "botocore*"
+      uv-root:
+        patterns:
+          - "*"
     assignees:
       - "melvyndekort"
     reviewers:
@@ -31,6 +38,10 @@ updates:
     schedule:
       interval: "weekly"
     rebase-strategy: "auto"
+    groups:
+      terraform-terraform:
+        patterns:
+          - "*"
     assignees:
       - "melvyndekort"
     reviewers:
