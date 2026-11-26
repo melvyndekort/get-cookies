@@ -23,7 +23,7 @@ jobs:
   validate:
     permissions:
       contents: read
-    uses: melvyndekort/gha-workflows/.github/workflows/terraform-pr-validate.yml@v1
+    uses: melvyndekort/gha-workflows/.github/workflows/terraform-pr-validate.yml@v2
 
   plan:
     needs: validate
@@ -31,6 +31,6 @@ jobs:
       id-token: write
       contents: read
       pull-requests: write
-    uses: melvyndekort/gha-workflows/.github/workflows/terraform-pr-plan.yml@v1
+    uses: melvyndekort/gha-workflows/.github/workflows/terraform-pr-plan.yml@v2
     secrets:
       plan-role-arn: ${{ secrets.AWS_PLAN_ROLE_ARN }}
